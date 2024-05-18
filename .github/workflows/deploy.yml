@@ -1,0 +1,40 @@
+name: Docker Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build and Save Docker Image
+        run: |
+          docker build -t backend:latest .
+          docker save backend:latest | gzip > backend.tar.gz
+
+      - name: Copy Docker Image to Server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_KEY }}
+          source: "backend.tar.gz"
+          target: "/tmp"
+
+      - name: Load and Run Docker Image on Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_KEY }}
+          script: |
+            docker load < /tmp/backend.tar.gz
+            docker stop backend || true
+            docker rm backend || true
+            docker run -p 3001:3001 -d --name backend backend:latest
+
