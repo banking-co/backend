@@ -11,12 +11,12 @@ type EventParams struct {
 }
 
 type ResponseUserGet struct {
-	Id        uint   `json:"id,omitempty"`
-	UserId    uint   `json:"userId,omitempty"`
-	Username  string `json:"username,omitempty"`
-	CreatedAt uint   `json:"createdAt,omitempty"`
-	UpdatedAt uint   `json:"updatedAt,omitempty"`
-	DeletedAt uint   `json:"deletedAt,omitempty"`
+	Id        *uint   `json:"id,omitempty"`
+	UserId    *uint   `json:"userId,omitempty"`
+	Username  *string `json:"username,omitempty"`
+	CreatedAt *uint   `json:"createdAt,omitempty"`
+	UpdatedAt *uint   `json:"updatedAt,omitempty"`
+	DeletedAt *uint   `json:"deletedAt,omitempty"`
 }
 
 type StartApp struct {
