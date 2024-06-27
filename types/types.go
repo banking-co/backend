@@ -4,18 +4,12 @@ type EventType = string
 type ErrorMessage = string
 
 const (
-	RequestPing       EventType = "ping"
-	RequestStartApp   EventType = "start_app"
-	RequestBalanceGet EventType = "balance_get"
-	RequestUserGet    EventType = "user_get"
-)
-
-const (
-	ResponsePong       EventType = "pong"
-	ResponseStartApp   EventType = "start_app"
-	ResponseBalanceGet EventType = "balance_get"
-	ResponseUserGet    EventType = "user_get"
-	ResponseError      EventType = "error"
+	EventPing       EventType = "ping"
+	EventPong       EventType = "pong"
+	EventStartApp   EventType = "start_app"
+	EventBalanceGet EventType = "balance_get"
+	EventUserGet    EventType = "user_get"
+	EventError      EventType = "error"
 )
 
 const (

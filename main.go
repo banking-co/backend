@@ -1,33 +1,46 @@
 package main
 
 import (
+	"os"
 	"rabotyaga-go-backend/api/realtime/balance"
 	"rabotyaga-go-backend/api/realtime/base"
 	"rabotyaga-go-backend/api/realtime/user"
 	"rabotyaga-go-backend/mysql/database"
 	"rabotyaga-go-backend/server"
 	"rabotyaga-go-backend/types"
+
+	"github.com/joho/godotenv"
 )
 
-func main() {
-	database.New(database.Options{
-		Database:       "dev",
-		Username:       "root",
-		Host:           "localhost",
-		MaxConnections: 10,
-		Port:           3306,
-		Password:       "admin",
-	})
+func init() {
+	if envErr := godotenv.Load(".env.local"); envErr != nil {
+		panic(envErr)
+	}
 
+	dbPassword, dbPasswordExist := os.LookupEnv("DB_PASSWORD")
+	if dbPasswordExist {
+		dbErr := database.New(database.Options{
+			Database:       "banking",
+			Username:       "app",
+			Host:           "147.45.184.220",
+			MaxConnections: 10,
+			Port:           3306,
+			Password:       dbPassword,
+		})
+
+		if dbErr != nil {
+			panic(dbErr)
+		}
+	}
+}
+
+func main() {
 	s := server.Init()
 
-	s.On(types.RequestPing, base.Ping)
-	s.On(types.RequestStartApp, base.StartApp)
-
-	s.On(types.RequestUserGet, user.Get)
-	s.On(types.RequestUserGet, user.Get)
-
-	s.On(types.RequestBalanceGet, balance.Get)
+	s.On(types.EventPing, base.Ping)
+	s.On(types.EventStartApp, base.StartApp)
+	s.On(types.EventUserGet, user.Get)
+	s.On(types.EventBalanceGet, balance.Get)
 
 	s.Listen()
 }

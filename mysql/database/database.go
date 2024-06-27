@@ -26,7 +26,7 @@ type SQL struct {
 
 var MySQL *SQL
 
-func New(opt Options) {
+func New(opt Options) error {
 
 	mysql, err := sql.Open("mysql", connectionString(opt))
 	if err != nil {
@@ -39,7 +39,7 @@ func New(opt Options) {
 
 	err = mysql.Ping()
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	MySQL = &SQL{
@@ -47,6 +47,7 @@ func New(opt Options) {
 		prepare: make(map[string]*sql.Stmt),
 	}
 
+	return nil
 }
 
 func (sql *SQL) Exec(event string, args ...interface{}) (*sql.Rows, *mysql.MySQLError) {
