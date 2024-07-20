@@ -37,10 +37,10 @@ func init() {
 func main() {
 	s := server.Init()
 
-	s.On(types.EventPing, base.Ping)
-	s.On(types.EventStartApp, base.StartApp)
-	s.On(types.EventUserGet, user.Get)
-	s.On(types.EventBalanceGet, balance.Get)
+	s.OnSocket(types.EventPing, base.Ping)
+	s.OnSocket(types.EventStartApp, base.StartApp)
+	s.OnSocket(types.EventUserGet, user.Get)
+	s.OnSocket(types.EventBalanceGet, balance.Get)
 
 	s.Listen()
 }

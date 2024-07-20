@@ -71,7 +71,16 @@ func (s *Server) Listen() {
 	}
 }
 
-func (s *Server) On(e types.EventType, cb OnCallbackFunc) {
+// need for Rest API, add later
+//func (s *Server) OnRest(e types.EventType, cb OnCallbackFunc) {
+//	if _, ok := s.events[e]; !ok {
+//		s.events[e] = []OnCallbackFunc{}
+//	}
+//
+//	s.events[e] = append(s.events[e], cb)
+//}
+
+func (s *Server) OnSocket(e types.EventType, cb OnCallbackFunc) {
 	if _, ok := s.events[e]; !ok {
 		s.events[e] = []OnCallbackFunc{}
 	}

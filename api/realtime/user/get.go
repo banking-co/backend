@@ -6,20 +6,18 @@ import (
 	"github.com/gobwas/ws/wsutil"
 	"net"
 	"rabotyaga-go-backend/mysql"
+	"rabotyaga-go-backend/structures"
+	"rabotyaga-go-backend/types"
 	"rabotyaga-go-backend/utils"
 )
 
-type RequestUserGet struct {
-	userId uint
-}
-
 func Get(conn net.Conn, code ws.OpCode, data json.RawMessage) {
-	reqData, err := utils.UnmarshalData[RequestUserGet](data)
+	reqData, err := utils.UnmarshalData[structures.RequestUserGet](data)
 
 	if err == nil {
-		user, _ := mysql.USER_GET_BY_UID(reqData.userId)
+		user, _ := mysql.USER_GET_BY_UID(reqData.UserId)
 
-		resData, err := utils.MarshalData(user)
+		resData, err := utils.MarshalData[structures.ResponseUserGet](types.EventUserGet, &structures.ResponseUserGet{User: *user})
 		if err != nil {
 			return
 		}
