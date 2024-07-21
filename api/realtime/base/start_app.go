@@ -23,7 +23,14 @@ func StartApp(conn net.Conn, code ws.OpCode, data json.RawMessage) {
 	}
 
 	if err == nil {
-		resData, err := utils.MarshalData[structures.ResponseStartApp](types.EventStartApp, &structures.ResponseStartApp{User: &user})
+		// todo: enable "isLogged"
+		resData, err := utils.
+			MarshalData[structures.ResponseStartApp](
+			types.EventStartApp,
+			&structures.ResponseStartApp{
+				User:     &user,
+				IsLogged: true,
+			})
 
 		if err != nil {
 			return
