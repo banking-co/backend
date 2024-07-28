@@ -1,5 +1,25 @@
 package types
 
+type VkParams struct {
+	VKUserId                  uint64 `json:"vk_user_id"`
+	VKAppId                   uint64 `json:"vk_app_id"`
+	VKIsAppUser               bool   `json:"vk_is_app_user"`
+	VKAreNotificationsEnabled bool   `json:"vk_are_notifications_enabled"`
+	VKGroupId                 uint64 `json:"vk_group_id"`
+	VKIsFavorite              bool   `json:"vk_is_favorite"`
+	VKTs                      uint64 `json:"vk_ts"`
+	VKIsRecommended           bool   `json:"vk_is_recommended"`
+	VKProfileId               uint64 `json:"vk_profile_id"`
+	VKHasProfileButton        bool   `json:"vk_has_profile_button"`
+	VKTestingGroupId          uint64 `json:"vk_testing_group_id"`
+	VKViewerGroupRole         string `json:"vk_viewer_group_role"`
+	VKPlatform                string `json:"vk_platform"`
+	VKLanguage                string `json:"vk_language"`
+	VKRef                     string `json:"vk_ref"`
+	VKAccessTokenSettings     string `json:"vk_access_token_settings"`
+	VKChatId                  uint64 `json:"vk_chat_id"`
+}
+
 type EventType = string
 type ErrorMessage = string
 

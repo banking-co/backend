@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/SevereCloud/vksdk/v3/vkapps"
 	"github.com/gobwas/ws"
 	"github.com/gobwas/ws/wsutil"
 	"log"
@@ -11,10 +12,11 @@ import (
 	"rabotyaga-go-backend/structures"
 	"rabotyaga-go-backend/types"
 	"rabotyaga-go-backend/utils"
+	"strconv"
 	"time"
 )
 
-type OnCallbackFunc = func(conn net.Conn, op ws.OpCode, data json.RawMessage)
+type OnCallbackFunc = func(conn net.Conn, op ws.OpCode, sign *vkapps.Params, data json.RawMessage)
 
 type Server struct {
 	events map[types.EventType][]OnCallbackFunc
@@ -31,8 +33,34 @@ func Init() *Server {
 
 func (s *Server) Listen() {
 	err := http.ListenAndServe(":3001", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Print("\033[H\033[2J")
 		fmt.Printf("Connection at [%s] \r\n", time.Now())
+		validate, err := vkapps.ParamsVerify(r.URL.String(), "8PogTmDn5uru9WPdXuup")
+		if !validate {
+			http.Error(w, fmt.Sprintf("Invalid request: %v", err), http.StatusUnauthorized)
+		}
+
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Invalid request: %v", err), http.StatusUnauthorized)
+			return
+		}
+
+		vkParams, err := vkapps.NewParams(r.URL)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Invalid request: %v", err), http.StatusUnauthorized)
+			return
+		}
+
+		vkTs, err := strconv.ParseInt(vkParams.VkTs, 10, 64)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Invalid request: %v", err), http.StatusUnauthorized)
+			return
+		}
+
+		if time.Now().Sub(time.Unix(vkTs, 0)) <= 30*time.Minute {
+			http.Error(w, fmt.Sprintf("Invalid request: token is rotten"), http.StatusUnauthorized)
+			return
+		}
+
 		conn, _, _, err := ws.UpgradeHTTP(r, w)
 		if err != nil {
 			log.Panicln("Upgrade HTTP error")
@@ -60,7 +88,7 @@ func (s *Server) Listen() {
 
 				if cbs, ok := s.events[message.Event]; ok {
 					for _, fc := range cbs {
-						fc(conn, op, message.Data)
+						fc(conn, op, vkParams, message.Data)
 					}
 				}
 			}
@@ -71,15 +99,6 @@ func (s *Server) Listen() {
 		log.Panicln("Server error starting")
 	}
 }
-
-// need for Rest API, add later
-//func (s *Server) OnRest(e types.EventType, cb OnCallbackFunc) {
-//	if _, ok := s.events[e]; !ok {
-//		s.events[e] = []OnCallbackFunc{}
-//	}
-//
-//	s.events[e] = append(s.events[e], cb)
-//}
 
 func (s *Server) OnSocket(e types.EventType, cb OnCallbackFunc) {
 	if _, ok := s.events[e]; !ok {
