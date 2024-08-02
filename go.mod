@@ -3,6 +3,7 @@ module rabotyaga-go-backend
 go 1.22.4
 
 require (
+	github.com/SevereCloud/vksdk/v3 v3.0.0
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/gobwas/ws v1.4.0
 	github.com/joho/godotenv v1.5.1
@@ -10,7 +11,6 @@ require (
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
-	github.com/SevereCloud/vksdk/v3 v3.0.0 // indirect
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect

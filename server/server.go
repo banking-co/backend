@@ -33,31 +33,35 @@ func Init() *Server {
 
 func (s *Server) Listen() {
 	err := http.ListenAndServe(":3001", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Printf("Connection at [%s] \r\n", time.Now())
 		validate, err := vkapps.ParamsVerify(r.URL.String(), "8PogTmDn5uru9WPdXuup")
 		if !validate {
-			http.Error(w, fmt.Sprintf("Invalid request: %v", err), http.StatusUnauthorized)
+			utils.SendError(w, "Invalid request", http.StatusForbidden)
+			return
+		}
+
+		if validate {
+			fmt.Printf("Connection at [%s] \r\n", time.Now())
 		}
 
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Invalid request: %v", err), http.StatusUnauthorized)
+			utils.SendError(w, "Invalid request", http.StatusForbidden)
 			return
 		}
 
 		vkParams, err := vkapps.NewParams(r.URL)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Invalid request: %v", err), http.StatusUnauthorized)
+			utils.SendError(w, "Invalid request", http.StatusForbidden)
 			return
 		}
 
 		vkTs, err := strconv.ParseInt(vkParams.VkTs, 10, 64)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Invalid request: %v", err), http.StatusUnauthorized)
+			utils.SendError(w, "Invalid request", http.StatusForbidden)
 			return
 		}
 
 		if time.Now().Sub(time.Unix(vkTs, 0)) <= 30*time.Minute {
-			http.Error(w, fmt.Sprintf("Invalid request: token is rotten"), http.StatusUnauthorized)
+			utils.SendError(w, "Invalid request", http.StatusForbidden)
 			return
 		}
 
