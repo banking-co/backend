@@ -14,8 +14,12 @@ type User struct {
 	DeletedAt gorm.DeletedAt `json:"deletedAt,omitempty"`
 }
 
-func UserWrap(u models.User) User {
-	return User{
+func UserWrap(u *models.User) *User {
+	if u == nil {
+		return nil
+	}
+
+	return &User{
 		Id:        u.ID,
 		Username:  u.Username,
 		CreatedAt: u.CreatedAt,

@@ -1,7 +1,10 @@
 package models
 
 import (
+	"errors"
 	"gorm.io/gorm"
+	"log"
+	"strconv"
 )
 
 type User struct {
@@ -14,4 +17,31 @@ type User struct {
 	ReferralsSent     []Referral      `gorm:"foreignKey:ReferrerID"`
 	ReferralsReceived []Referral      `gorm:"foreignKey:ReferralID"`
 	Transactions      []Transaction   `gorm:"foreignKey:UserID"`
+}
+
+func GetUserByUsername(db *gorm.DB, username int) *User {
+	var user User
+	var uid = "id" + strconv.Itoa(username)
+
+	if err := db.
+		Preload("Bans").
+		Where("username = ?", uid).
+		First(&user).Error; err != nil {
+		if errors.Is(gorm.ErrRecordNotFound, err) {
+			user := User{
+				Username: uid,
+			}
+			if err := db.Create(&user).Error; err != nil {
+				log.Fatal("Failed to create user:", err)
+				return nil
+			} else {
+				return &user
+			}
+		} else {
+			log.Fatal("Failed to query user:", err)
+			return nil
+		}
+	}
+
+	return &user
 }
