@@ -9,6 +9,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 	"rabotyaga-go-backend/database"
 	"rabotyaga-go-backend/models"
 	"rabotyaga-go-backend/responseData"
@@ -34,6 +35,8 @@ func Init() *Server {
 }
 
 func (s *Server) Listen() {
+	mode, modeExist := os.LookupEnv("DB_PASSWORD")
+
 	err := http.ListenAndServe(":3001", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		validate, err := vkapps.ParamsVerify(r.URL.String(), "8PogTmDn5uru9WPdXuup")
 		if !validate {
@@ -62,19 +65,11 @@ func (s *Server) Listen() {
 			return
 		}
 
-		if time.Now().Sub(time.Unix(vkTs, 0)) >= 10*time.Minute {
-			utils.SendError(w, "The authorization period has expired", http.StatusForbidden)
-			return
-		}
-
-		user, err := models.GetUserByUsername(database.DB, vkParams.VkUserID)
-		if err != nil {
-			utils.SendError(w, "User is blocked", http.StatusUnauthorized)
-			return
-		}
-
-		if len(user.Bans) >= 1 {
-			return
+		if !modeExist || mode != "development" {
+			if time.Now().Sub(time.Unix(vkTs, 0)) >= 10*time.Minute {
+				utils.SendError(w, "The authorization period has expired", http.StatusForbidden)
+				return
+			}
 		}
 
 		conn, _, _, err := ws.UpgradeHTTP(r, w)
@@ -91,6 +86,12 @@ func (s *Server) Listen() {
 				}
 			}()
 
+			user, err := models.GetUserByUsername(database.DB, vkParams.VkUserID)
+			if err != nil {
+				utils.SendError(w, "User is nil", http.StatusUnauthorized)
+				return
+			}
+
 			for {
 				msg, op, err := wsutil.ReadClientData(conn)
 				if err != nil {
@@ -100,6 +101,11 @@ func (s *Server) Listen() {
 				message, err := utils.UnmarshalData[responseData.EventParams](msg)
 				if err != nil {
 					break
+				}
+
+				if message.Event != types.EventStartApp && len(user.Bans) >= 1 {
+					utils.SendError(w, "User is blocked", http.StatusUnauthorized)
+					return
 				}
 
 				if cbs, ok := s.events[message.Event]; ok {

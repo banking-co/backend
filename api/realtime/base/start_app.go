@@ -2,6 +2,7 @@ package base
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/SevereCloud/vksdk/v3/vkapps"
 	"github.com/gobwas/ws"
 	"github.com/gobwas/ws/wsutil"
@@ -16,12 +17,19 @@ import (
 func StartApp(conn net.Conn, code ws.OpCode, vkParams *vkapps.Params, data json.RawMessage) {
 	var db = database.DB
 
-	user, _ := models.GetUserByUsername(db, vkParams.VkUserID)
+	user, err := models.GetUserByUsername(db, vkParams.VkUserID)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	resData, err := utils.MarshalData[responseData.ResponseStartApp](types.EventStartApp, &responseData.ResponseStartApp{
 		User: responseData.UserWrap(user),
 		Bans: responseData.BansWrap(user.Bans),
 	})
+	if err != nil {
+		return
+	}
 
 	err = wsutil.WriteServerMessage(conn, code, resData)
 	if err != nil {

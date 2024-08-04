@@ -16,10 +16,6 @@ type Options struct {
 	Password       string `json:"Password"`
 }
 
-var modelList = []interface{}{
-	models.User{},
-}
-
 var DB *gorm.DB
 
 func Init(opt Options) {

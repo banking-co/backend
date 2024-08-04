@@ -17,7 +17,7 @@ func init() {
 		panic(envErr)
 	}
 
-	dbPassword, dbPasswordExist := os.LookupEnv("DB_PASSWORD")
+	dbPassword, dbPasswordExist := os.LookupEnv("APP_ENV")
 	if dbPasswordExist {
 		database.Init(database.Options{
 			Database:       "banking",
