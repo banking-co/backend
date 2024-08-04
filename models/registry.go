@@ -7,6 +7,7 @@ func RegisterModels(db *gorm.DB) error {
 		&User{},
 		&Ban{},
 		&Bonus{},
+		&Balance{},
 		&Business{},
 		&BusinessUpgrade{},
 		&BusinessStaff{},

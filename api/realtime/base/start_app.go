@@ -24,8 +24,9 @@ func StartApp(conn net.Conn, code ws.OpCode, vkParams *vkapps.Params, data json.
 	}
 
 	resData, err := utils.MarshalData[responseData.ResponseStartApp](types.EventStartApp, &responseData.ResponseStartApp{
-		User: responseData.UserWrap(user),
-		Bans: responseData.BansWrap(user.Bans),
+		User:     responseData.UserWrap(user),
+		Bans:     responseData.BansWrap(user.Bans),
+		Balances: responseData.BalancesWrap(user.Balances),
 	})
 	if err != nil {
 		return
