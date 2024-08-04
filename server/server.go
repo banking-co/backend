@@ -37,7 +37,7 @@ func (s *Server) Listen() {
 	err := http.ListenAndServe(":3001", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		validate, err := vkapps.ParamsVerify(r.URL.String(), "8PogTmDn5uru9WPdXuup")
 		if !validate {
-			utils.SendError(w, "Invalid request", http.StatusForbidden)
+			utils.SendError(w, "Signature verification error", http.StatusForbidden)
 			return
 		}
 
