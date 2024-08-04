@@ -35,7 +35,7 @@ func Init() *Server {
 }
 
 func (s *Server) Listen() {
-	mode, modeExist := os.LookupEnv("DB_PASSWORD")
+	mode, modeExist := os.LookupEnv("APP_ENV")
 
 	err := http.ListenAndServe(":3001", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		validate, err := vkapps.ParamsVerify(r.URL.String(), "8PogTmDn5uru9WPdXuup")
