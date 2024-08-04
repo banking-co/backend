@@ -35,8 +35,7 @@ type RequestStartApp struct {
 }
 
 type ResponseStartApp struct {
-	IsLogged bool             `json:"isLogged"`
-	User     *User            `json:"user,omitempty"`
-	Balance  *ResponseBalance `json:"balance,omitempty"`
-	Bans     []*Ban           `json:"bans,omitempty"`
+	User    *User            `json:"user,omitempty"`
+	Balance *ResponseBalance `json:"balance,omitempty"`
+	Bans    []*Ban           `json:"bans,omitempty"`
 }

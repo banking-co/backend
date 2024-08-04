@@ -19,9 +19,8 @@ func StartApp(conn net.Conn, code ws.OpCode, vkParams *vkapps.Params, data json.
 	user := models.GetUserByUsername(db, vkParams.VkUserID)
 
 	resData, err := utils.MarshalData[responseData.ResponseStartApp](types.EventStartApp, &responseData.ResponseStartApp{
-		User:     responseData.UserWrap(user),
-		Bans:     responseData.BansWrap(user.Bans),
-		IsLogged: true,
+		User: responseData.UserWrap(user),
+		Bans: responseData.BansWrap(user.Bans),
 	})
 
 	err = wsutil.WriteServerMessage(conn, code, resData)
