@@ -1,12 +1,10 @@
 package database
 
 import (
-	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
 	"rabotyaga-go-backend/models"
-	"reflect"
 )
 
 type Options struct {
@@ -34,22 +32,8 @@ func Init(opt Options) {
 	}
 }
 
-func AutoMigrateAllModels(db *gorm.DB) error {
-	for _, model := range modelList {
-		modelType := reflect.TypeOf(model)
-		if modelType.Kind() == reflect.Ptr {
-			modelType = modelType.Elem()
-		}
-		fmt.Printf("Migrating model: %s\n", modelType.Name())
-		if err := db.AutoMigrate(model); err != nil {
-			return fmt.Errorf("failed to migrate model %s: %w", modelType.Name(), err)
-		}
-	}
-	return nil
-}
-
 func Migrate() {
-	if err := AutoMigrateAllModels(DB); err != nil {
+	if err := models.RegisterModels(DB); err != nil {
 		log.Fatal("Failed to migrate database:", err)
 	}
 }
