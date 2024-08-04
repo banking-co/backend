@@ -46,24 +46,24 @@ func (s *Server) Listen() {
 		}
 
 		if err != nil {
-			utils.SendError(w, "Invalid request", http.StatusForbidden)
+			utils.SendError(w, "Signature verification error", http.StatusForbidden)
 			return
 		}
 
 		vkParams, err := vkapps.NewParams(r.URL)
 		if err != nil {
-			utils.SendError(w, "Invalid request", http.StatusForbidden)
+			utils.SendError(w, "Error converting the starting parameters", http.StatusForbidden)
 			return
 		}
 
 		vkTs, err := strconv.ParseInt(vkParams.VkTs, 10, 64)
 		if err != nil {
-			utils.SendError(w, "Invalid request", http.StatusForbidden)
+			utils.SendError(w, "Error getting the launch date", http.StatusForbidden)
 			return
 		}
 
-		if time.Now().Sub(time.Unix(vkTs, 0)) >= 30*time.Minute {
-			utils.SendError(w, "Invalid request", http.StatusForbidden)
+		if time.Now().Sub(time.Unix(vkTs, 0)) >= 10*time.Minute {
+			utils.SendError(w, "The authorization period has expired", http.StatusForbidden)
 			return
 		}
 
