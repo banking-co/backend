@@ -16,7 +16,7 @@ import (
 func StartApp(conn net.Conn, code ws.OpCode, vkParams *vkapps.Params, data json.RawMessage) {
 	var db = database.DB
 
-	user := models.GetUserByUsername(db, vkParams.VkUserID)
+	user, _ := models.GetUserByUsername(db, vkParams.VkUserID)
 
 	resData, err := utils.MarshalData[responseData.ResponseStartApp](types.EventStartApp, &responseData.ResponseStartApp{
 		User: responseData.UserWrap(user),

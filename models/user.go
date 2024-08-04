@@ -19,7 +19,7 @@ type User struct {
 	Transactions      []Transaction   `gorm:"foreignKey:UserID"`
 }
 
-func GetUserByUsername(db *gorm.DB, username int) *User {
+func GetUserByUsername(db *gorm.DB, username int) (*User, error) {
 	var user User
 	var uid = "id" + strconv.Itoa(username)
 
@@ -33,15 +33,15 @@ func GetUserByUsername(db *gorm.DB, username int) *User {
 			}
 			if err := db.Create(&user).Error; err != nil {
 				log.Fatal("Failed to create user:", err)
-				return nil
+				return nil, err
 			} else {
-				return &user
+				return &user, nil
 			}
 		} else {
 			log.Fatal("Failed to query user:", err)
-			return nil
+			return nil, err
 		}
 	}
 
-	return &user
+	return &user, nil
 }

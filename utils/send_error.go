@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"github.com/gobwas/ws"
 	"log"
 	"net/http"
@@ -17,4 +18,6 @@ func SendError(w http.ResponseWriter, reason string, code uint16) {
 		log.Printf("Error writing response: %v", writeErr)
 		return
 	}
+
+	fmt.Println(reason, code)
 }

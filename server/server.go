@@ -9,6 +9,8 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"rabotyaga-go-backend/database"
+	"rabotyaga-go-backend/models"
 	"rabotyaga-go-backend/responseData"
 	"rabotyaga-go-backend/types"
 	"rabotyaga-go-backend/utils"
@@ -60,8 +62,18 @@ func (s *Server) Listen() {
 			return
 		}
 
-		if time.Now().Sub(time.Unix(vkTs, 0)) <= 30*time.Minute {
+		if time.Now().Sub(time.Unix(vkTs, 0)) >= 30*time.Minute {
 			utils.SendError(w, "Invalid request", http.StatusForbidden)
+			return
+		}
+
+		user, err := models.GetUserByUsername(database.DB, vkParams.VkUserID)
+		if err != nil {
+			utils.SendError(w, "User is blocked", http.StatusUnauthorized)
+			return
+		}
+
+		if len(user.Bans) >= 1 {
 			return
 		}
 
