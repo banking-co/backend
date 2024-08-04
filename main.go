@@ -5,7 +5,7 @@ import (
 	"rabotyaga-go-backend/api/realtime/balance"
 	"rabotyaga-go-backend/api/realtime/base"
 	"rabotyaga-go-backend/api/realtime/user"
-	"rabotyaga-go-backend/mysql/database"
+	"rabotyaga-go-backend/database"
 	"rabotyaga-go-backend/server"
 	"rabotyaga-go-backend/types"
 
@@ -19,18 +19,16 @@ func init() {
 
 	dbPassword, dbPasswordExist := os.LookupEnv("DB_PASSWORD")
 	if dbPasswordExist {
-		dbErr := database.New(database.Options{
+		database.Init(database.Options{
 			Database:       "banking",
 			Username:       "app",
 			Host:           "147.45.184.220",
-			MaxConnections: 10,
-			Port:           3306,
+			MaxConnections: "10",
+			Port:           "3306",
 			Password:       dbPassword,
 		})
 
-		if dbErr != nil {
-			panic(dbErr)
-		}
+		database.Migrate()
 	}
 }
 

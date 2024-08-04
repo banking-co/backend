@@ -9,7 +9,7 @@ import (
 	"log"
 	"net"
 	"net/http"
-	"rabotyaga-go-backend/structures"
+	"rabotyaga-go-backend/responseData"
 	"rabotyaga-go-backend/types"
 	"rabotyaga-go-backend/utils"
 	"strconv"
@@ -85,7 +85,7 @@ func (s *Server) Listen() {
 					break
 				}
 
-				message, err := utils.UnmarshalData[structures.EventParams](msg)
+				message, err := utils.UnmarshalData[responseData.EventParams](msg)
 				if err != nil {
 					break
 				}

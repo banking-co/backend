@@ -1,4 +1,4 @@
-package structures
+package responseData
 
 import (
 	"encoding/json"
@@ -12,15 +12,6 @@ type EventParams struct {
 
 type Error struct {
 	Msg string `json:"msg"`
-}
-
-type User struct {
-	Id        uint   `json:"id,omitempty"`
-	UserId    uint   `json:"userId,omitempty"`
-	Username  string `json:"username,omitempty"`
-	CreatedAt uint   `json:"createdAt,omitempty"`
-	UpdatedAt uint   `json:"updatedAt,omitempty"`
-	DeletedAt uint   `json:"deletedAt,omitempty"`
 }
 
 type RequestUserGet struct {
@@ -45,6 +36,6 @@ type RequestStartApp struct {
 
 type ResponseStartApp struct {
 	IsLogged bool             `json:"isLogged"`
-	User     *User            `json:"user,omitempty"`
+	User     User             `json:"user,omitempty"`
 	Balance  *ResponseBalance `json:"balance,omitempty"`
 }
