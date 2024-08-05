@@ -4,6 +4,7 @@ import (
 	"errors"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+	"rabotyaga-go-backend/types"
 	"strconv"
 )
 
@@ -28,6 +29,39 @@ func (u *User) AfterCreate(tx *gorm.DB) (err error) {
 	}
 
 	if err := tx.Create(&balances).Error; err != nil {
+		return err
+	}
+
+	business := Business{
+		UserID: u.ID,
+		Name:   "Bank",
+	}
+
+	if err := tx.Create(&business).Error; err != nil {
+		return err
+	}
+
+	businessRole := BusinessRole{
+		UserID:     u.ID,
+		BusinessID: business.ID,
+		RoleId:     types.BusinessRoleBot,
+		RoleName:   "bot",
+	}
+
+	if err := tx.Create(&businessRole).Error; err != nil {
+		return err
+	}
+
+	businessStaff := BusinessStaff{
+		BusinessID: business.ID,
+		EmployerID: 0,
+		UserType:   0,
+		WorkerID:   u.ID,
+		RoleID:     types.BusinessRoleBot,
+		Salary:     0,
+	}
+
+	if err := tx.Create(&businessStaff).Error; err != nil {
 		return err
 	}
 

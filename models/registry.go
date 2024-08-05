@@ -5,12 +5,13 @@ import "gorm.io/gorm"
 func RegisterModels(db *gorm.DB) error {
 	return db.AutoMigrate(
 		&User{},
+		&Business{},
 		&Ban{},
 		&Bonus{},
 		&Balance{},
-		&Business{},
-		&BusinessUpgrade{},
+		&BusinessRole{},
 		&BusinessStaff{},
+		&BusinessUpgrade{},
 		&BusinessProfit{},
 		&Inventory{},
 		&Auction{},

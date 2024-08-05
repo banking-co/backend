@@ -40,3 +40,7 @@ const (
 	ErrorMessageMissingEvent ErrorMessage = "event is missing"
 	ErrorMessageMissingData  ErrorMessage = "data is missing"
 )
+
+const (
+	BusinessRoleBot = 0
+)
