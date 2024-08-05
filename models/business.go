@@ -13,3 +13,35 @@ type Business struct {
 	Staff    []BusinessStaff   `gorm:"foreignKey:BusinessID"`
 	Profits  []BusinessProfit  `gorm:"foreignKey:BusinessID"`
 }
+
+func GetBusinessById(db *gorm.DB, bid int) (*Business, error) {
+	var business Business
+
+	if err := db.
+		Preload("User").
+		Preload("Upgrades").
+		Preload("Staff").
+		Preload("Profits").
+		Where(`id = ?`, bid).
+		First(&business).Error; err != nil {
+		return nil, err
+	}
+
+	return &business, nil
+}
+
+func GetBusinessByUserId(db *gorm.DB, uid int) (*Business, error) {
+	var business Business
+
+	if err := db.
+		Preload("User").
+		Preload("Upgrades").
+		Preload("Staff").
+		Preload("Profits").
+		Where(`user_id = ?`, uid).
+		First(&business).Error; err != nil {
+		return nil, err
+	}
+
+	return &business, nil
+}

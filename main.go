@@ -4,6 +4,7 @@ import (
 	"os"
 	"rabotyaga-go-backend/api/realtime/balance"
 	"rabotyaga-go-backend/api/realtime/base"
+	"rabotyaga-go-backend/api/realtime/business"
 	"rabotyaga-go-backend/api/realtime/user"
 	"rabotyaga-go-backend/database"
 	"rabotyaga-go-backend/server"
@@ -21,8 +22,8 @@ func init() {
 	if dbPasswordExist {
 		database.Init(database.Options{
 			Database:       "banking",
-			Username:       "app",
-			Host:           "147.45.184.220",
+			Username:       "backend",
+			Host:           "localhost",
 			MaxConnections: "10",
 			Port:           "3306",
 			Password:       dbPassword,
@@ -39,7 +40,7 @@ func main() {
 
 	s.OnSocket(types.EventPing, base.Ping)
 	s.OnSocket(types.EventStartApp, base.StartApp)
-	s.OnSocket(types.EventStartApp, base.StartApp)
+	s.OnSocket(types.EventGetBusiness, business.Get)
 	s.OnSocket(types.EventUserGet, user.Get)
 	s.OnSocket(types.EventBalanceGet, balance.Get)
 
