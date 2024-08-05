@@ -6,12 +6,13 @@ import (
 )
 
 type Balance struct {
-	Id        uint      `json:"id"`
-	UserID    uint      `json:"userId"`
-	Amount    uint64    `json:"amount"`
-	Currency  string    `json:"currency"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdateAt  time.Time `json:"updateAt"`
+	Id         uint      `json:"id"`
+	Importance uint8     `json:"importance"`
+	UserID     uint      `json:"userId"`
+	Amount     uint64    `json:"amount"`
+	Currency   string    `json:"currency"`
+	CreatedAt  time.Time `json:"createdAt"`
+	UpdateAt   time.Time `json:"updateAt"`
 }
 
 func BalanceWrap(b *models.Balance) *Balance {
@@ -20,12 +21,13 @@ func BalanceWrap(b *models.Balance) *Balance {
 	}
 
 	return &Balance{
-		Id:        b.ID,
-		UserID:    b.UserID,
-		Amount:    b.Amount,
-		Currency:  b.Currency,
-		CreatedAt: b.CreatedAt,
-		UpdateAt:  b.UpdatedAt,
+		Id:         b.ID,
+		UserID:     b.UserID,
+		Importance: b.Importance,
+		Amount:     b.Amount,
+		Currency:   b.Currency,
+		CreatedAt:  b.CreatedAt,
+		UpdateAt:   b.UpdatedAt,
 	}
 }
 

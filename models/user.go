@@ -22,9 +22,9 @@ type User struct {
 
 func (u *User) AfterCreate(tx *gorm.DB) (err error) {
 	balances := []Balance{
-		{UserID: u.ID, Currency: "donate", Amount: 0},
-		{UserID: u.ID, Currency: "usd", Amount: 1000},
-		{UserID: u.ID, Currency: "btc", Amount: 1},
+		{Importance: 0, UserID: u.ID, Currency: "usd", Amount: 50000},
+		{Importance: 1, UserID: u.ID, Currency: "btc", Amount: 100},
+		{Importance: 2, UserID: u.ID, Currency: "donate", Amount: 0},
 	}
 
 	if err := tx.Create(&balances).Error; err != nil {
@@ -52,6 +52,8 @@ func GetUserByUsername(db *gorm.DB, username int) (*User, error) {
 				if err := tx.Create(&user).Error; err != nil {
 					return err
 				}
+
+				return nil
 			}
 
 			return err

@@ -7,10 +7,11 @@ import (
 
 type Balance struct {
 	gorm.Model
-	UserID   uint   `gorm:"not null;index"`
-	Amount   uint64 `gorm:"not null;default:0"`
-	Currency string `gorm:"type:varchar(6);not null;default:'usd'"`
-	User     User   `gorm:"foreignKey:UserID"`
+	UserID     uint   `gorm:"not null;index"`
+	Importance uint8  `gorm:"not null"`
+	Amount     uint64 `gorm:"not null;default:0"`
+	Currency   string `gorm:"type:varchar(6);not null;default:'usd'"`
+	User       User   `gorm:"foreignKey:UserID"`
 }
 
 func (b *Balance) AdjustAmount(tx *gorm.DB, delta int64) error {

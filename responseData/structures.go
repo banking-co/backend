@@ -36,6 +36,6 @@ type RequestStartApp struct {
 
 type ResponseStartApp struct {
 	User     *User      `json:"user,omitempty"`
-	Balances []*Balance `json:"balance,omitempty"`
+	Balances []*Balance `json:"balances,omitempty"`
 	Bans     []*Ban     `json:"bans,omitempty"`
 }

@@ -103,9 +103,14 @@ func (s *Server) Listen() {
 					break
 				}
 
+				if len(message.Event) >= 20 {
+					utils.SendError(w, "Event is very big", http.StatusBadRequest)
+					break
+				}
+
 				if message.Event != types.EventStartApp && len(user.Bans) >= 1 {
 					utils.SendError(w, "User is blocked", http.StatusUnauthorized)
-					return
+					break
 				}
 
 				if cbs, ok := s.events[message.Event]; ok {

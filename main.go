@@ -39,6 +39,7 @@ func main() {
 
 	s.OnSocket(types.EventPing, base.Ping)
 	s.OnSocket(types.EventStartApp, base.StartApp)
+	s.OnSocket(types.EventStartApp, base.StartApp)
 	s.OnSocket(types.EventUserGet, user.Get)
 	s.OnSocket(types.EventBalanceGet, balance.Get)
 
