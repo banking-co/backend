@@ -5,12 +5,12 @@ services:
     image: mysql:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root_mysql
-      MYSQL_DATABASE: banking
-      MYSQL_USER: backend
-      MYSQL_PASSWORD: backend_mysql
+      - MYSQL_DATABASE=banking
+      - MYSQL_USER=backend
+      - MYSQL_PASSWORD=backend_mysql
+      - MYSQL_ROOT_PASSWORD=mysql
     ports:
-      - 3306:3306
+      - "3306:3306"
     volumes:
       - ./.data:/var/lib/mysql
     networks:
