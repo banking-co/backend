@@ -19,7 +19,7 @@ import (
 	"time"
 )
 
-type OnCallbackFunc = func(conn net.Conn, op ws.OpCode, sign *vkapps.Params, data json.RawMessage)
+type OnCallbackFunc = func(e types.EventType, conn net.Conn, op ws.OpCode, sign *vkapps.Params, data json.RawMessage)
 
 type Server struct {
 	events map[types.EventType][]OnCallbackFunc
@@ -115,7 +115,7 @@ func (s *Server) Listen() {
 
 				if cbs, ok := s.events[message.Event]; ok {
 					for _, fc := range cbs {
-						fc(conn, op, vkParams, message.Data)
+						fc(message.Event, conn, op, vkParams, message.Data)
 					}
 				}
 			}

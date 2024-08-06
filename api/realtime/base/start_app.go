@@ -14,7 +14,7 @@ import (
 	"rabotyaga-go-backend/utils"
 )
 
-func StartApp(conn net.Conn, code ws.OpCode, vkParams *vkapps.Params, data json.RawMessage) {
+func StartApp(e types.EventType, conn net.Conn, code ws.OpCode, vkParams *vkapps.Params, data json.RawMessage) {
 	var db = database.DB
 
 	user, err := models.GetUserByUsername(db, vkParams.VkUserID)
@@ -23,7 +23,7 @@ func StartApp(conn net.Conn, code ws.OpCode, vkParams *vkapps.Params, data json.
 		return
 	}
 
-	resData, err := utils.MarshalData[responseData.ResponseStartApp](types.EventStartApp, &responseData.ResponseStartApp{
+	resData, err := utils.MarshalData[responseData.ResponseStartApp](e, &responseData.ResponseStartApp{
 		User:     responseData.UserWrap(user),
 		Bans:     responseData.BansWrap(user.Bans),
 		Balances: responseData.BalancesWrap(user.Balances),

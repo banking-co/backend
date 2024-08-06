@@ -14,7 +14,7 @@ import (
 	"rabotyaga-go-backend/utils"
 )
 
-func Get(conn net.Conn, code ws.OpCode, vkParams *vkapps.Params, data json.RawMessage) {
+func Get(e types.EventType, conn net.Conn, code ws.OpCode, vkParams *vkapps.Params, data json.RawMessage) {
 	var db = database.DB
 	var bussiness *models.Business
 
@@ -49,7 +49,7 @@ func Get(conn net.Conn, code ws.OpCode, vkParams *vkapps.Params, data json.RawMe
 		bussiness = b
 	}
 
-	resData, err := utils.MarshalData[responseData.ResponseBusinessGet](types.EventGetBusiness, &responseData.ResponseBusinessGet{
+	resData, err := utils.MarshalData[responseData.ResponseBusinessGet](e, &responseData.ResponseBusinessGet{
 		Business: responseData.BusinessWrap(bussiness),
 	})
 	if err != nil {
