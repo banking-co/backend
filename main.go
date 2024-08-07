@@ -4,6 +4,7 @@ import (
 	"os"
 	"rabotyaga-go-backend/api/realtime/balance"
 	"rabotyaga-go-backend/api/realtime/base"
+	"rabotyaga-go-backend/api/realtime/bonus"
 	"rabotyaga-go-backend/api/realtime/business"
 	"rabotyaga-go-backend/api/realtime/user"
 	"rabotyaga-go-backend/database"
@@ -38,12 +39,25 @@ func init() {
 func main() {
 	s := server.Init()
 
+	// server
 	s.OnSocket(types.EventPing, base.Ping)
+
+	// start
 	s.OnSocket(types.EventStartApp, base.StartApp)
+
+	// user
+	s.OnSocket(types.EventUserGet, user.Get)
+
+	// bonus
+	s.OnSocket(types.EventBonusGet, bonus.Get)
+	s.OnSocket(types.EventBonusReceive, bonus.Receive)
+
+	// balance
+	s.OnSocket(types.EventBalanceGet, balance.Get)
+
+	// business
 	s.OnSocket(types.EventGetBusiness, business.Get)
 	s.OnSocket(types.EventGetPrimaryBusiness, business.Get)
-	s.OnSocket(types.EventUserGet, user.Get)
-	s.OnSocket(types.EventBalanceGet, balance.Get)
 
 	s.Listen()
 }

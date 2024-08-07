@@ -10,6 +10,8 @@ const (
 	EventGetBusiness        EventType = "get_business"
 	EventGetPrimaryBusiness EventType = "get_pr_business"
 	EventBalanceGet         EventType = "balance_get"
+	EventBonusGet           EventType = "bonus_get"
+	EventBonusReceive       EventType = "bonus_receive"
 	EventUserGet            EventType = "user_get"
 	EventError              EventType = "error"
 )
