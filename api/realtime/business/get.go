@@ -7,18 +7,18 @@ import (
 	"github.com/gobwas/ws"
 	"github.com/gobwas/ws/wsutil"
 	"net"
-	"rabotyaga-go-backend/database"
+	"rabotyaga-go-backend/dto"
 	"rabotyaga-go-backend/models"
-	"rabotyaga-go-backend/responseData"
+	"rabotyaga-go-backend/mysqldb"
 	"rabotyaga-go-backend/types"
 	"rabotyaga-go-backend/utils"
 )
 
 func Get(e types.EventType, conn net.Conn, code ws.OpCode, vkParams *vkapps.Params, data json.RawMessage) {
-	var db = database.DB
+	var db = mysqldb.DB
 	var bussiness *models.Business
 
-	pData, err := utils.UnmarshalData[responseData.RequestBusinessGet](data)
+	pData, err := utils.UnmarshalData[dto.RequestBusinessGet](data)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -49,8 +49,8 @@ func Get(e types.EventType, conn net.Conn, code ws.OpCode, vkParams *vkapps.Para
 		bussiness = b
 	}
 
-	resData, err := utils.MarshalData[responseData.ResponseBusinessGet](e, &responseData.ResponseBusinessGet{
-		Business: responseData.BusinessWrap(bussiness),
+	resData, err := utils.MarshalData[dto.ResponseBusinessGet](e, &dto.ResponseBusinessGet{
+		Business: dto.BusinessWrap(bussiness),
 	})
 	if err != nil {
 		return

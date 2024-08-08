@@ -1,4 +1,4 @@
-package database
+package mysqldb
 
 import (
 	"gorm.io/driver/mysql"
@@ -9,12 +9,12 @@ import (
 )
 
 type Options struct {
-	Database       string `json:"Database"`
-	Username       string `json:"Username"`
-	Host           string `json:"Host"`
-	MaxConnections string `json:"MaxConnections"`
-	Port           string `json:"Port"`
-	Password       string `json:"Password"`
+	Database       string
+	Username       string
+	Host           string
+	MaxConnections string
+	Port           string
+	Password       string
 }
 
 var DB *gorm.DB
@@ -23,7 +23,6 @@ func Init() {
 	dbPassword, dbPasswordExist := os.LookupEnv("DB_PASSWORD")
 	if !dbPasswordExist {
 		panic("DB_PASSWORD not set in environment")
-		return
 	}
 
 	opt := Options{
@@ -50,8 +49,4 @@ func Migrate() {
 	if err := models.RegisterModels(DB); err != nil {
 		log.Fatal("Failed to migrate database:", err)
 	}
-}
-
-func GetDB() *gorm.DB {
-	return DB
 }

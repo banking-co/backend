@@ -1,4 +1,4 @@
-package responseData
+package dto
 
 import (
 	"rabotyaga-go-backend/models"

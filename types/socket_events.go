@@ -1,5 +1,7 @@
 package types
 
+import "encoding/json"
+
 type EventType = string
 type ErrorMessage = string
 
@@ -16,6 +18,11 @@ const (
 	EventError              EventType = "error"
 )
 
-const (
-	BusinessRoleBot = 0
-)
+type EventParams struct {
+	Event EventType       `json:"event"`
+	Data  json.RawMessage `json:"data,omitempty"`
+}
+
+type Error struct {
+	Msg string `json:"msg"`
+}

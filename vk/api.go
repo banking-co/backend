@@ -11,8 +11,7 @@ func Init() {
 	token, tokenExist := os.LookupEnv("APP_SERVICE_KEY")
 
 	if !tokenExist {
-		panic("VKApp service key is nil")
-		return
+		panic("VK App service key is nil")
 	}
 
 	Api = api.NewVK(token)

@@ -6,7 +6,8 @@ import (
 	"rabotyaga-go-backend/api/realtime/bonus"
 	"rabotyaga-go-backend/api/realtime/business"
 	"rabotyaga-go-backend/api/realtime/user"
-	"rabotyaga-go-backend/database"
+	"rabotyaga-go-backend/mysqldb"
+	"rabotyaga-go-backend/redisdb"
 	"rabotyaga-go-backend/server"
 	"rabotyaga-go-backend/types"
 	"rabotyaga-go-backend/vk"
@@ -19,7 +20,8 @@ func init() {
 		panic(err)
 	}
 
-	database.Init()
+	mysqldb.Init()
+	redisdb.Init()
 	vk.Init()
 }
 

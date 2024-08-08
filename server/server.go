@@ -10,9 +10,8 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"rabotyaga-go-backend/database"
 	"rabotyaga-go-backend/models"
-	"rabotyaga-go-backend/responseData"
+	"rabotyaga-go-backend/mysqldb"
 	"rabotyaga-go-backend/types"
 	"rabotyaga-go-backend/utils"
 	"strconv"
@@ -75,7 +74,6 @@ func (s *Server) Listen() {
 		conn, _, _, err := ws.UpgradeHTTP(r, w)
 		if err != nil {
 			log.Panicln("Upgrade HTTP error")
-			return
 		}
 
 		go func() {
@@ -86,7 +84,7 @@ func (s *Server) Listen() {
 				}
 			}()
 
-			user, err := models.GetUserByUsername(database.DB, vkParams.VkUserID)
+			user, err := models.GetUserByUsername(mysqldb.DB, vkParams.VkUserID)
 			if err != nil {
 				utils.SendError(w, "User is nil", http.StatusUnauthorized)
 				return
@@ -98,7 +96,7 @@ func (s *Server) Listen() {
 					break
 				}
 
-				message, err := utils.UnmarshalData[responseData.EventParams](msg)
+				message, err := utils.UnmarshalData[types.EventParams](msg)
 				if err != nil {
 					break
 				}

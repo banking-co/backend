@@ -7,15 +7,15 @@ import (
 	"github.com/gobwas/ws"
 	"github.com/gobwas/ws/wsutil"
 	"net"
-	"rabotyaga-go-backend/database"
+	"rabotyaga-go-backend/dto"
 	"rabotyaga-go-backend/models"
-	"rabotyaga-go-backend/responseData"
+	"rabotyaga-go-backend/mysqldb"
 	"rabotyaga-go-backend/types"
 	"rabotyaga-go-backend/utils"
 )
 
 func StartApp(e types.EventType, conn net.Conn, code ws.OpCode, vkParams *vkapps.Params, data json.RawMessage) {
-	var db = database.DB
+	var db = mysqldb.DB
 
 	user, err := models.GetUserByUsername(db, vkParams.VkUserID)
 	if err != nil {
@@ -23,10 +23,10 @@ func StartApp(e types.EventType, conn net.Conn, code ws.OpCode, vkParams *vkapps
 		return
 	}
 
-	resData, err := utils.MarshalData[responseData.ResponseStartApp](e, &responseData.ResponseStartApp{
-		User:     responseData.UserWrap(user),
-		Bans:     responseData.BansWrap(user.Bans),
-		Balances: responseData.BalancesWrap(user.Balances),
+	resData, err := utils.MarshalData[dto.ResponseStartApp](e, &dto.ResponseStartApp{
+		User:     dto.UserWrap(user),
+		Bans:     dto.BansWrap(user.Bans),
+		Balances: dto.BalancesWrap(user.Balances),
 	})
 	if err != nil {
 		return
