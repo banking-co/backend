@@ -1,7 +1,6 @@
 package main
 
 import (
-	"os"
 	"rabotyaga-go-backend/api/realtime/balance"
 	"rabotyaga-go-backend/api/realtime/base"
 	"rabotyaga-go-backend/api/realtime/bonus"
@@ -10,30 +9,18 @@ import (
 	"rabotyaga-go-backend/database"
 	"rabotyaga-go-backend/server"
 	"rabotyaga-go-backend/types"
+	"rabotyaga-go-backend/vk"
 
 	"github.com/joho/godotenv"
 )
 
 func init() {
-	if envErr := godotenv.Load(".env.local"); envErr != nil {
-		panic(envErr)
+	if err := godotenv.Load(".env.local"); err != nil {
+		panic(err)
 	}
 
-	dbPassword, dbPasswordExist := os.LookupEnv("DB_PASSWORD")
-	if dbPasswordExist {
-		database.Init(database.Options{
-			Database:       "banking",
-			Username:       "backend",
-			Host:           "localhost",
-			MaxConnections: "10",
-			Port:           "3306",
-			Password:       dbPassword,
-		})
-
-		database.Migrate()
-	} else {
-		panic("DB_PASSWORD not set in environment")
-	}
+	database.Init()
+	vk.Init()
 }
 
 func main() {

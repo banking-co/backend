@@ -4,6 +4,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
+	"os"
 	"rabotyaga-go-backend/models"
 )
 
@@ -18,14 +19,31 @@ type Options struct {
 
 var DB *gorm.DB
 
-func Init(opt Options) {
+func Init() {
+	dbPassword, dbPasswordExist := os.LookupEnv("DB_PASSWORD")
+	if !dbPasswordExist {
+		panic("DB_PASSWORD not set in environment")
+		return
+	}
+
+	opt := Options{
+		Database:       "banking",
+		Username:       "backend",
+		Host:           "localhost",
+		MaxConnections: "10",
+		Port:           "3306",
+		Password:       dbPassword,
+	}
+
 	dsn := opt.Username + ":" + opt.Password + "@tcp(" + opt.Host + ":" + opt.Port + ")/" + opt.Database + "?charset=utf8mb4&parseTime=True&loc=Local"
 
 	var err error
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal("Не удалось подключиться к базе данных:", err)
+		log.Fatal("Failed to connect to the database:", err)
 	}
+
+	Migrate()
 }
 
 func Migrate() {

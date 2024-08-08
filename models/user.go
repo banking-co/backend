@@ -2,14 +2,17 @@ package models
 
 import (
 	"errors"
+	"github.com/SevereCloud/vksdk/v3/api"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"rabotyaga-go-backend/types"
+	"rabotyaga-go-backend/vk"
 	"strconv"
 )
 
 type User struct {
 	gorm.Model
+	VkId              int             `gorm:"not null"`
 	Username          string          `gorm:"type:varchar(255);not null;unique"`
 	Bans              []Ban           `gorm:"foreignKey:UserID"`
 	Balances          []Balance       `gorm:"foreignKey:UserID"`
@@ -68,6 +71,18 @@ func (u *User) AfterCreate(tx *gorm.DB) (err error) {
 	return nil
 }
 
+func GetVkUserInfo(id int) (*api.UsersGetResponse, error) {
+	users, err := vk.Api.UsersGet(api.Params{
+		"user_ids": id,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &users, nil
+}
+
 func GetUserByUsername(db *gorm.DB, username int) (*User, error) {
 	var user User
 	uid := "id" + strconv.Itoa(username)
@@ -80,6 +95,7 @@ func GetUserByUsername(db *gorm.DB, username int) (*User, error) {
 			First(&user).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				user = User{
+					VkId:     username,
 					Username: uid,
 				}
 
