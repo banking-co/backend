@@ -42,7 +42,7 @@ func (u *User) AfterCreate(tx *gorm.DB) (err error) {
 
 	business := Business{
 		UserID: u.ID,
-		Name:   "Bank",
+		Name:   "Amazing Bank",
 	}
 
 	if err := tx.Create(&business).Error; err != nil {
