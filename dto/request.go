@@ -13,8 +13,8 @@ type RequestBusinessGet struct {
 	BusinessId *int `json:"businessId,omitempty"`
 }
 
-type ResponseBalance struct {
-	BalanceUsd string `json:"balanceUsd"`
+type ResponseBalancesGet struct {
+	Balances []*Balance `json:"balances,omitempty"`
 }
 
 type RequestStartApp struct {

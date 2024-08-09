@@ -77,58 +77,98 @@ func (u *User) AfterCreate(tx *gorm.DB) (err error) {
 }
 
 func GetVkUserInfo(id int) (*object.UsersUser, error) {
-	redisInfo, err := redisdb.Get(strconv.Itoa(id))
+	ids := []int{id}
+	users, err := GetVkUsersInfo(ids)
+
 	if err != nil {
-		fmt.Println("GetVkUserInfo redis error:", err)
 		return nil, err
 	}
 
-	if redisInfo != nil {
-		var userInfo *object.UsersUser
+	if users == nil {
+		return nil, errors.New("GetVkUserInfo is nil")
+	}
 
-		err := json.Unmarshal(redisInfo, &userInfo)
+	if len(*users) > 1 {
+		return nil, errors.New("GetVkUserInfo is big")
+	}
+
+	firstUser := (*users)[0]
+	return &firstUser, nil
+}
+
+func GetVkUsersInfo(ids []int) (*[]object.UsersUser, error) {
+	var strIds = make([]string, 0, len(ids))
+	for _, id := range ids {
+		strIds = append(strIds, fmt.Sprintf("vk_id%v", strconv.Itoa(id)))
+	}
+
+	usersInfoWithBytes, err := redisdb.GetAll(strIds)
+	if !errors.Is(err, nil) {
+		fmt.Println("GetVkUsersInfo redis error:", err)
+		return nil, err
+	}
+
+	usersInfo := make([]object.UsersUser, 0, len(ids))
+	if usersInfoWithBytes != nil {
+		for _, u := range *usersInfoWithBytes {
+			if u == nil {
+				return nil, errors.New("GetVkUsersInfo user is nil")
+			}
+
+			user := object.UsersUser{}
+
+			err := json.Unmarshal(u, &user)
+			if err != nil {
+				return nil, err
+			}
+
+			usersInfo = append(usersInfo, user)
+		}
+
+		if len(usersInfo) == len(ids) {
+			return &usersInfo, nil
+		}
+	}
+
+	existingIDs := make(map[int]bool, len(usersInfo))
+	for _, user := range usersInfo {
+		existingIDs[user.ID] = true
+	}
+
+	missingIDs := make([]int, 0, len(ids)-len(usersInfo))
+	for _, id := range ids {
+		if !existingIDs[id] {
+			missingIDs = append(missingIDs, id)
+		}
+	}
+
+	vkUsers, err := vk.Api.UsersGet(api.Params{
+		"user_ids": missingIDs,
+	}.Lang(object.LangRU))
+	if err != nil {
+		return nil, err
+	}
+
+	saveData := make(map[string][]byte)
+	users := make([]object.UsersUser, 0, len(missingIDs))
+	for _, u := range vkUsers {
+		users = append(users, u)
+
+		uB, err := json.Marshal(u)
 		if err != nil {
 			return nil, err
 		}
-
-		return userInfo, err
+		saveData[fmt.Sprintf("vk_id%v", strconv.Itoa(u.ID))] = uB
 	}
 
-	users, err := vk.Api.UsersGet(api.Params{
-		"user_id": id,
-	}.Lang(object.LangRU))
-
+	err = redisdb.SetAll(saveData, 23*time.Hour)
 	if err != nil {
 		return nil, err
 	}
 
-	if len(users) == 0 {
-		return nil, nil
-	}
+	cS := append(usersInfo, users...)
 
-	userBytes, err := json.Marshal(&users[0])
-	if err != nil {
-		return nil, err
-	}
-
-	err = redisdb.Set(strconv.Itoa(id), userBytes, 23*time.Hour)
-	if err != nil {
-		return nil, err
-	}
-
-	return &users[0], nil
-}
-
-func GetVkUsersInfo(ids []int) (*api.UsersGetResponse, error) {
-	users, err := vk.Api.UsersGet(api.Params{
-		"user_ids": ids,
-	}.Lang(object.LangRU))
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &users, nil
+	return &cS, nil
 }
 
 func GetUserByUsername(db *gorm.DB, username int) (*User, error) {
