@@ -13,6 +13,10 @@ type RequestBusinessGet struct {
 	BusinessId *int `json:"businessId,omitempty"`
 }
 
+type RequestBusinessStaffGet struct {
+	BusinessId *int `json:"businessId,omitempty"`
+}
+
 type ResponseBalancesGet struct {
 	Balances []*Balance `json:"balances,omitempty"`
 }

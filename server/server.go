@@ -100,8 +100,9 @@ func (s *Server) Listen() {
 				if err != nil {
 					break
 				}
-
-				if len(message.Event) >= 20 {
+				ln := utils.GetBigLenEvent()
+				fmt.Println(ln)
+				if uint8(len(message.Event)) > utils.GetBigLenEvent() {
 					utils.SendError(w, "Event is very big", http.StatusBadRequest)
 					break
 				}

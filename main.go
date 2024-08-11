@@ -47,6 +47,7 @@ func main() {
 	// business
 	s.OnSocket(types.EventGetBusiness, business.Get)
 	s.OnSocket(types.EventGetPrimaryBusiness, business.Get)
+	s.OnSocket(types.EventGetBusinessStaff, business.GetStaff)
 
 	s.Listen()
 }
