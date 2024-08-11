@@ -20,6 +20,6 @@ func GetStaff(req *entities.Request) {
 
 	req.SendMessage(req.Event, dto.ResponseBusinessStaffGet{
 		BusinessID:    bID,
-		BusinessStaff: staff,
+		BusinessStaff: dto.BusinessStaffsWrap(staff),
 	})
 }

@@ -206,3 +206,17 @@ func GetUserByUsername(db *gorm.DB, username int) (*User, error) {
 
 	return &user, nil
 }
+
+func GetUserById(db *gorm.DB, id uint) (*User, error) {
+	var user User
+
+	if err := db.
+		Preload("Bans").
+		Preload("Balances").
+		Where("id = ?", id).
+		First(&user).Error; err != nil {
+		return nil, errors.New("user is nil")
+	}
+
+	return &user, nil
+}

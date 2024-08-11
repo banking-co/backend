@@ -25,6 +25,6 @@ type ResponseBusinessGet struct {
 }
 
 type ResponseBusinessStaffGet struct {
-	BusinessID    *int                    `json:"bankId,omitempty"`
-	BusinessStaff *[]models.BusinessStaff `json:"bankStaff,omitempty"`
+	BusinessID    *int             `json:"bankId,omitempty"`
+	BusinessStaff []*BusinessStaff `json:"bankStaff,omitempty"`
 }

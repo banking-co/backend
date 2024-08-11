@@ -16,8 +16,8 @@ type BusinessStaff struct {
 	Business   Business `gorm:"foreignKey:BusinessID"`
 }
 
-func GetBusinessStaffByBusinessId(db *gorm.DB, bid *int) (*[]BusinessStaff, error) {
-	var businessStaff *[]BusinessStaff
+func GetBusinessStaffByBusinessId(db *gorm.DB, bid *int) ([]*BusinessStaff, error) {
+	var businessStaff []*BusinessStaff
 
 	if bid == nil {
 		return nil, errors.New("business id is nil")
