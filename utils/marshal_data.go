@@ -10,18 +10,8 @@ type SendData struct {
 	Data  interface{}     `json:"data"`
 }
 
-/*
-	func UnmarshalData[T any](bytes []byte) (*T, error) {
-		out := new(T)
-		if err := json.Unmarshal(bytes, out); err != nil {
-			return nil, err
-		}
-		return out, nil
-	}
-*/
-
-func MarshalData[T any](e types.EventType, d *T) ([]byte, error) {
-	data, err := json.Marshal(SendData{Data: d, Event: e})
+func MarshalData(e types.EventType, d interface{}) ([]byte, error) {
+	data, err := json.Marshal(SendData{Event: e, Data: d})
 	if err != nil {
 		return nil, err
 	}

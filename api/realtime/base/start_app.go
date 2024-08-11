@@ -1,47 +1,31 @@
 package base
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/SevereCloud/vksdk/v3/vkapps"
-	"github.com/gobwas/ws"
-	"github.com/gobwas/ws/wsutil"
-	"net"
 	"rabotyaga-go-backend/dto"
+	"rabotyaga-go-backend/entities"
 	"rabotyaga-go-backend/models"
 	"rabotyaga-go-backend/mysqldb"
 	"rabotyaga-go-backend/types"
-	"rabotyaga-go-backend/utils"
 )
 
-func StartApp(e types.EventType, conn net.Conn, code ws.OpCode, vkParams *vkapps.Params, data json.RawMessage) {
+func StartApp(req *entities.Request) {
 	var db = mysqldb.DB
 
-	user, err := models.GetUserByUsername(db, vkParams.VkUserID)
+	user, err := models.GetUserByUsername(db, req.StartParams.VkUserID)
 	if err != nil {
-		fmt.Println(err)
+		req.SendError(types.ErrorCodeBadRequest)
 		return
 	}
 
-	resData, err := utils.MarshalData[dto.ResponseStartApp](e, &dto.ResponseStartApp{
+	req.SendMessage(req.Event, dto.ResponseStartApp{
 		User:     dto.UserWrap(user),
 		Bans:     dto.BansWrap(user.Bans),
 		Balances: dto.BalancesWrap(user.Balances),
 	})
-	if err != nil {
-		return
-	}
-
-	err = wsutil.WriteServerMessage(conn, code, resData)
-	if err != nil {
-		return
-	}
 
 	if len(user.Bans) >= 1 {
-		err := conn.Close()
-		if err != nil {
-			return
-		}
+		req.SendError(types.ErrorCodeIsBanned)
+		req.Disconnect()
 		return
 	}
 }

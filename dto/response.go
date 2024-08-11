@@ -3,7 +3,7 @@ package dto
 import "rabotyaga-go-backend/models"
 
 type ResponseError struct {
-	Message string `json:"message,omitempty"`
+	Code string `json:"code,omitempty"`
 }
 
 type ResponseStartApp struct {

@@ -1,37 +1,23 @@
 package balance
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/SevereCloud/vksdk/v3/vkapps"
-	"github.com/gobwas/ws"
-	"github.com/gobwas/ws/wsutil"
-	"net"
 	"rabotyaga-go-backend/dto"
+	"rabotyaga-go-backend/entities"
 	"rabotyaga-go-backend/models"
 	"rabotyaga-go-backend/mysqldb"
 	"rabotyaga-go-backend/types"
-	"rabotyaga-go-backend/utils"
 )
 
-func Get(e types.EventType, conn net.Conn, code ws.OpCode, vkParams *vkapps.Params, data json.RawMessage) {
+func Get(req *entities.Request) {
 	var db = mysqldb.DB
 
-	balances, err := models.GetBalancesByUid(db, vkParams.VkUserID)
+	balances, err := models.GetBalancesByUid(db, req.StartParams.VkUserID)
 	if err != nil {
-		fmt.Println(err)
+		req.SendError(types.ErrorCodeBadRequest)
 		return
 	}
 
-	resData, err := utils.MarshalData[dto.ResponseBalancesGet](e, &dto.ResponseBalancesGet{
+	req.SendMessage(req.Event, dto.ResponseBalancesGet{
 		Balances: dto.BalancesWrap(balances),
 	})
-	if err != nil {
-		return
-	}
-
-	err = wsutil.WriteServerMessage(conn, code, resData)
-	if err != nil {
-		return
-	}
 }

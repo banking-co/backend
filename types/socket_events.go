@@ -3,7 +3,13 @@ package types
 import "encoding/json"
 
 type EventType = string
-type ErrorMessage = string
+type ErrorCode = string
+
+const (
+	ErrorCodeIsBanned   ErrorCode = "is_banned"
+	ErrorCodeBadRequest ErrorCode = "bad_request"
+	ErrorCodeForbidden  ErrorCode = "forbidden"
+)
 
 const (
 	EventPing               EventType = "ping"

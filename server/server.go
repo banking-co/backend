@@ -1,15 +1,14 @@
 package server
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/SevereCloud/vksdk/v3/vkapps"
 	"github.com/gobwas/ws"
 	"github.com/gobwas/ws/wsutil"
 	"log"
-	"net"
 	"net/http"
 	"os"
+	"rabotyaga-go-backend/entities"
 	"rabotyaga-go-backend/models"
 	"rabotyaga-go-backend/mysqldb"
 	"rabotyaga-go-backend/types"
@@ -18,7 +17,7 @@ import (
 	"time"
 )
 
-type OnCallbackFunc = func(e types.EventType, conn net.Conn, op ws.OpCode, sign *vkapps.Params, data json.RawMessage)
+type OnCallbackFunc = func(req *entities.Request)
 
 type Server struct {
 	events map[types.EventType][]OnCallbackFunc
@@ -112,8 +111,17 @@ func (s *Server) Listen() {
 				}
 
 				if cbs, ok := s.events[message.Event]; ok {
+					req := entities.Request{
+						Conn: conn,
+						Op:   op,
+
+						Event:       message.Event,
+						Data:        message.Data,
+						StartParams: vkParams,
+					}
+
 					for _, fc := range cbs {
-						fc(message.Event, conn, op, vkParams, message.Data)
+						fc(&req)
 					}
 				}
 			}
@@ -131,12 +139,4 @@ func (s *Server) OnSocket(e types.EventType, cb OnCallbackFunc) {
 	}
 
 	s.events[e] = append(s.events[e], cb)
-}
-
-func (s *Server) SendMessage(errCode string) {
-	//wsutil.WriteServerMessage(conn, code, resData)
-}
-
-func (s *Server) SendError(errCode string) {
-	//wsutil.WriteServerMessage(conn, code, resData)
 }

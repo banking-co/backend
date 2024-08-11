@@ -1,63 +1,45 @@
 package business
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/SevereCloud/vksdk/v3/vkapps"
-	"github.com/gobwas/ws"
-	"github.com/gobwas/ws/wsutil"
-	"net"
 	"rabotyaga-go-backend/dto"
+	"rabotyaga-go-backend/entities"
 	"rabotyaga-go-backend/models"
 	"rabotyaga-go-backend/mysqldb"
 	"rabotyaga-go-backend/types"
-	"rabotyaga-go-backend/utils"
 )
 
-func Get(e types.EventType, conn net.Conn, code ws.OpCode, vkParams *vkapps.Params, data json.RawMessage) {
+func Get(req *entities.Request) {
 	var db = mysqldb.DB
-	var bussiness *models.Business
+	var bu *models.Business
+	var uID = req.PickInt("userId")
+	var bID = req.PickInt("businessId")
 
-	pData, err := utils.UnmarshalData[dto.RequestBusinessGet](data)
-	if err != nil {
-		fmt.Println(err)
+	if uID == nil && bID == nil {
+		req.SendError(types.ErrorCodeBadRequest)
 		return
 	}
 
-	if pData.UserId == nil && pData.BusinessId == nil {
-		fmt.Println("UserID and Business ID is nil")
-		return
-	}
-
-	if pData.BusinessId != nil {
-		b, err := models.GetBusinessById(db, *pData.BusinessId)
+	if bID != nil {
+		b, err := models.GetBusinessById(db, *bID)
 		if err != nil {
-			fmt.Println(err)
+			req.SendError(types.ErrorCodeBadRequest)
 			return
 		}
 
-		bussiness = b
+		bu = b
 	}
 
-	if pData.UserId != nil {
-		b, err := models.GetBusinessByUserId(db, *pData.UserId)
+	if uID != nil {
+		b, err := models.GetBusinessByUserId(db, *uID)
 		if err != nil {
-			fmt.Println(err)
+			req.SendError(types.ErrorCodeBadRequest)
 			return
 		}
 
-		bussiness = b
+		bu = b
 	}
 
-	resData, err := utils.MarshalData[dto.ResponseBusinessGet](e, &dto.ResponseBusinessGet{
-		Business: dto.BusinessWrap(bussiness),
+	req.SendMessage(req.Event, dto.ResponseBusinessGet{
+		Business: dto.BusinessWrap(bu),
 	})
-	if err != nil {
-		return
-	}
-
-	err = wsutil.WriteServerMessage(conn, code, resData)
-	if err != nil {
-		return
-	}
 }
