@@ -16,41 +16,18 @@ import (
 
 func GetStaff(e types.EventType, conn net.Conn, code ws.OpCode, vkParams *vkapps.Params, data json.RawMessage) {
 	var db = mysqldb.DB
-	var bussiness *models.Business
 
-	pData, err := utils.UnmarshalData[dto.RequestBusinessGet](data)
+	rD, err := utils.UnmarshalData[dto.RequestBusinessStaffGet](data)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	if pData.UserId == nil && pData.BusinessId == nil {
-		fmt.Println("UserID and Business ID is nil")
-		return
-	}
+	staff, err := models.GetBusinessStaffByBusinessId(db, rD.BusinessId)
 
-	if pData.BusinessId != nil {
-		b, err := models.GetBusinessById(db, *pData.BusinessId)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-
-		bussiness = b
-	}
-
-	if pData.UserId != nil {
-		b, err := models.GetBusinessByUserId(db, *pData.UserId)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-
-		bussiness = b
-	}
-
-	resData, err := utils.MarshalData[dto.ResponseBusinessGet](e, &dto.ResponseBusinessGet{
-		Business: dto.BusinessWrap(bussiness),
+	resData, err := utils.MarshalData[dto.ResponseBusinessStaffGet](e, &dto.ResponseBusinessStaffGet{
+		BusinessID:    rD.BusinessId,
+		BusinessStaff: staff,
 	})
 	if err != nil {
 		return

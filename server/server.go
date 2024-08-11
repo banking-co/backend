@@ -100,8 +100,7 @@ func (s *Server) Listen() {
 				if err != nil {
 					break
 				}
-				ln := utils.GetBigLenEvent()
-				fmt.Println(ln)
+
 				if uint8(len(message.Event)) > utils.GetBigLenEvent() {
 					utils.SendError(w, "Event is very big", http.StatusBadRequest)
 					break
@@ -132,4 +131,12 @@ func (s *Server) OnSocket(e types.EventType, cb OnCallbackFunc) {
 	}
 
 	s.events[e] = append(s.events[e], cb)
+}
+
+func (s *Server) SendMessage(errCode string) {
+	//wsutil.WriteServerMessage(conn, code, resData)
+}
+
+func (s *Server) SendError(errCode string) {
+	//wsutil.WriteServerMessage(conn, code, resData)
 }

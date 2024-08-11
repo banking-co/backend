@@ -23,3 +23,8 @@ type ResponseBusinessGet struct {
 	BusinessUpgrade *models.BusinessUpgrade `json:"bankUpgrades,omitempty"`
 	BusinessProfits *models.BusinessProfit  `json:"bankProfits,omitempty"`
 }
+
+type ResponseBusinessStaffGet struct {
+	BusinessID    *int                    `json:"bankId,omitempty"`
+	BusinessStaff *[]models.BusinessStaff `json:"bankStaff,omitempty"`
+}
