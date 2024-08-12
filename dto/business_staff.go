@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"github.com/SevereCloud/vksdk/v3/object"
 	"gorm.io/gorm"
 	"rabotyaga-go-backend/models"
 	"rabotyaga-go-backend/mysqldb"
@@ -31,17 +32,23 @@ func BusinessStaffWrap(b *models.BusinessStaff) *BusinessStaff {
 		return nil
 	}
 
-	worker, err := models.GetUserById(mysqldb.DB, b.WorkerID)
-	if err != nil {
-		return nil
+	var workerPersonalInfo *object.UsersUser
+	if b.WorkerID != 0 {
+		u, err := models.GetUserById(mysqldb.DB, b.WorkerID)
+		if err != nil {
+			return nil
+		}
+		workerPersonalInfo, _ = models.GetVkUserInfo(u.VkId)
 	}
-	workerPersonalInfo, _ := models.GetVkUserInfo(worker.VkId)
 
-	employer, err := models.GetUserById(mysqldb.DB, b.EmployerID)
-	if err != nil {
-		return nil
+	var employerPersonalInfo *object.UsersUser
+	if b.EmployerID != 0 {
+		employer, err := models.GetUserById(mysqldb.DB, b.EmployerID)
+		if err != nil {
+			return nil
+		}
+		employerPersonalInfo, _ = models.GetVkUserInfo(employer.VkId)
 	}
-	employerPersonalInfo, _ := models.GetVkUserInfo(employer.VkId)
 
 	return &BusinessStaff{
 		ID:         b.ID,
