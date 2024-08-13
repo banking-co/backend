@@ -6,9 +6,10 @@ type EventType = string
 type ErrorCode = string
 
 const (
-	ErrorCodeIsBanned   ErrorCode = "is_banned"
-	ErrorCodeBadRequest ErrorCode = "bad_request"
-	ErrorCodeForbidden  ErrorCode = "forbidden"
+	ErrorCodeIsBanned            ErrorCode = "is_banned"
+	ErrorCodeBadRequest          ErrorCode = "bad_request"
+	ErrorCodeInternalServerError ErrorCode = "internal_server_error"
+	ErrorCodeForbidden           ErrorCode = "forbidden"
 )
 
 const (

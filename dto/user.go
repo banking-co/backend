@@ -1,7 +1,6 @@
 package dto
 
 import (
-	"fmt"
 	"github.com/SevereCloud/vksdk/v3/object"
 	"gorm.io/gorm"
 	"rabotyaga-go-backend/models"
@@ -39,21 +38,9 @@ func VkUserInfoWrap(u *object.UsersUser) *VkUserInfo {
 	}
 }
 
-func UserWrap(u *models.User) *User {
+func UserWrap(u *models.User, p *object.UsersUser) *User {
 	if u == nil {
 		return nil
-	}
-
-	vkAllUserInfo, err := models.GetVkUserInfo(u.VkId)
-	if err != nil {
-		fmt.Println("User info not got")
-	}
-
-	var vkCurrentUserInfo *VkUserInfo
-	if vkAllUserInfo != nil {
-		vkCurrentUserInfo = VkUserInfoWrap(vkAllUserInfo)
-	} else {
-		vkCurrentUserInfo = nil
 	}
 
 	return &User{
@@ -62,6 +49,18 @@ func UserWrap(u *models.User) *User {
 		CreatedAt:    u.CreatedAt,
 		UpdatedAt:    u.UpdatedAt,
 		DeletedAt:    u.DeletedAt,
-		PersonalInfo: vkCurrentUserInfo,
+		PersonalInfo: VkUserInfoWrap(p),
 	}
+}
+
+func UsersWrap(us []*models.User, pIs map[uint]*object.UsersUser) []*User {
+	var users = make([]*User, 0, len(us))
+	for _, u := range us {
+		if u != nil {
+			personalInfo := pIs[u.ID]
+			users = append(users, UserWrap(u, personalInfo))
+		}
+	}
+
+	return users
 }

@@ -1,10 +1,8 @@
 package dto
 
 import (
-	"github.com/SevereCloud/vksdk/v3/object"
 	"gorm.io/gorm"
 	"rabotyaga-go-backend/models"
-	"rabotyaga-go-backend/mysqldb"
 	"time"
 )
 
@@ -19,9 +17,6 @@ type BusinessStaff struct {
 	EmployerID uint `json:"employerId"`
 	WorkerID   uint `json:"workerId"`
 
-	WorkerPersonalInfo   *VkUserInfo `json:"workerPersonalInfo"`
-	EmployerPersonalInfo *VkUserInfo `json:"employerPersonalInfo"`
-
 	CreatedAt time.Time      `json:"createdAt"`
 	UpdatedAt time.Time      `json:"updatedAt"`
 	DeletedAt gorm.DeletedAt `json:"deletedAt"`
@@ -32,23 +27,52 @@ func BusinessStaffWrap(b *models.BusinessStaff) *BusinessStaff {
 		return nil
 	}
 
-	var workerPersonalInfo *object.UsersUser
-	if b.WorkerID != 0 {
-		u, err := models.GetUserById(mysqldb.DB, b.WorkerID)
-		if err != nil {
-			return nil
-		}
-		workerPersonalInfo, _ = models.GetVkUserInfo(u.VkId)
-	}
-
-	var employerPersonalInfo *object.UsersUser
-	if b.EmployerID != 0 {
-		employer, err := models.GetUserById(mysqldb.DB, b.EmployerID)
-		if err != nil {
-			return nil
-		}
-		employerPersonalInfo, _ = models.GetVkUserInfo(employer.VkId)
-	}
+	//var uIDs = make([]int, 0, 2)
+	//var wU *models.User
+	//var eU *models.User
+	//if b.WorkerID != 0 {
+	//	u, err := models.GetUserById(mysqldb.DB, b.WorkerID)
+	//	if err != nil {
+	//		return nil
+	//	}
+	//
+	//	wU = u
+	//	uIDs = append(uIDs, u.VkId)
+	//}
+	//
+	//if b.EmployerID != 0 {
+	//	u, err := models.GetUserById(mysqldb.DB, b.EmployerID)
+	//	if err != nil {
+	//		return nil
+	//	}
+	//
+	//	eU = u
+	//	uIDs = append(uIDs, u.VkId)
+	//}
+	//
+	//var pU *[]object.UsersUser
+	//if len(uIDs) >= 1 {
+	//	i, err := models.GetVkUsersInfo(uIDs)
+	//	if err != nil {
+	//		fmt.Println(err)
+	//	}
+	//
+	//	pU = i
+	//}
+	//
+	//var wPI *object.UsersUser
+	//var ePI *object.UsersUser
+	//if len(*pU) >= 1 {
+	//	for _, u := range *pU {
+	//		if wU != nil && u.ID == wU.VkId {
+	//			wPI = &u
+	//		}
+	//
+	//		if eU != nil && u.ID == eU.VkId {
+	//			ePI = &u
+	//		}
+	//	}
+	//}
 
 	return &BusinessStaff{
 		ID:         b.ID,
@@ -60,9 +84,6 @@ func BusinessStaffWrap(b *models.BusinessStaff) *BusinessStaff {
 
 		EmployerID: b.EmployerID,
 		WorkerID:   b.WorkerID,
-
-		WorkerPersonalInfo:   VkUserInfoWrap(workerPersonalInfo),
-		EmployerPersonalInfo: VkUserInfoWrap(employerPersonalInfo),
 
 		CreatedAt: b.CreatedAt,
 		UpdatedAt: b.UpdatedAt,

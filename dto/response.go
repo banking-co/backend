@@ -27,4 +27,5 @@ type ResponseBusinessGet struct {
 type ResponseBusinessStaffGet struct {
 	BusinessID    *int             `json:"bankId,omitempty"`
 	BusinessStaff []*BusinessStaff `json:"bankStaff,omitempty"`
+	Users         []*User          `json:"users,omitempty"`
 }

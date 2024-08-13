@@ -171,8 +171,9 @@ func GetVkUsersInfo(ids []int) (*[]object.UsersUser, error) {
 	return &cS, nil
 }
 
-func GetUserByUsername(db *gorm.DB, username int) (*User, error) {
-	var user User
+func GetUserByUsername(db *gorm.DB, username int) (*User, *object.UsersUser, error) {
+	var user *User
+	var personalInfo *object.UsersUser
 	uid := "id" + strconv.Itoa(username)
 
 	err := db.Transaction(func(tx *gorm.DB) error {
@@ -182,7 +183,7 @@ func GetUserByUsername(db *gorm.DB, username int) (*User, error) {
 			Where("username = ?", uid).
 			First(&user).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
-				user = User{
+				user = &User{
 					VkId:     username,
 					Username: uid,
 				}
@@ -201,22 +202,70 @@ func GetUserByUsername(db *gorm.DB, username int) (*User, error) {
 	})
 
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return &user, nil
+	if user != nil {
+		pI, err := GetVkUserInfo(user.VkId)
+		if err == nil && pI != nil {
+			personalInfo = pI
+		}
+	}
+
+	return user, personalInfo, nil
 }
 
-func GetUserById(db *gorm.DB, id uint) (*User, error) {
-	var user User
+func GetUserById(db *gorm.DB, id uint) (*User, *object.UsersUser, error) {
+	var user *User
+	var personalInfo *object.UsersUser
 
 	if err := db.
 		Preload("Bans").
 		Preload("Balances").
 		Where("id = ?", id).
 		First(&user).Error; err != nil {
-		return nil, errors.New("user is nil")
+		return nil, nil, errors.New("users is nil")
 	}
 
-	return &user, nil
+	if user != nil {
+		p, _ := GetVkUserInfo(user.VkId)
+
+		if p != nil {
+			personalInfo = p
+		}
+	}
+
+	return user, personalInfo, nil
+}
+
+func GetUsersByIds(db *gorm.DB, ids []uint) ([]*User, map[uint]*object.UsersUser, error) {
+	var users []*User
+	var personalUsersInfo = make(map[uint]*object.UsersUser)
+
+	if err := db.
+		Preload("Bans").
+		Preload("Balances").
+		Where("id IN (?)", ids).
+		Find(&users).Error; err != nil {
+		return nil, nil, errors.New("user is nil")
+	}
+
+	if users != nil || len(users) >= 1 {
+		var usersVkIds = make([]int, 0, len(users))
+
+		for _, u := range users {
+			usersVkIds = append(usersVkIds, u.VkId)
+		}
+
+		if len(usersVkIds) >= 1 {
+			pUI, err := GetVkUsersInfo(usersVkIds)
+			if err == nil && pUI != nil && len(*pUI) >= 1 {
+				for _, pI := range *pUI {
+					personalUsersInfo[uint(pI.ID)] = &pI
+				}
+			}
+		}
+	}
+
+	return users, personalUsersInfo, nil
 }

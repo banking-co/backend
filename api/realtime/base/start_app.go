@@ -11,14 +11,14 @@ import (
 func StartApp(req *entities.Request) {
 	var db = mysqldb.DB
 
-	user, err := models.GetUserByUsername(db, req.StartParams.VkUserID)
+	user, personalUserInfo, err := models.GetUserByUsername(db, req.StartParams.VkUserID)
 	if err != nil {
 		req.SendError(types.ErrorCodeBadRequest)
 		return
 	}
 
 	req.SendMessage(req.Event, dto.ResponseStartApp{
-		User:     dto.UserWrap(user),
+		User:     dto.UserWrap(user, personalUserInfo),
 		Bans:     dto.BansWrap(user.Bans),
 		Balances: dto.BalancesWrap(user.Balances),
 	})

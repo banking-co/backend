@@ -83,7 +83,7 @@ func (s *Server) Listen() {
 				}
 			}()
 
-			user, err := models.GetUserByUsername(mysqldb.DB, vkParams.VkUserID)
+			user, _, err := models.GetUserByUsername(mysqldb.DB, vkParams.VkUserID)
 			if err != nil {
 				utils.SendError(w, "User is nil", http.StatusUnauthorized)
 				return
