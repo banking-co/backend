@@ -17,16 +17,15 @@ import (
 
 type User struct {
 	gorm.Model
-	VkId              int             `gorm:"not null"`
-	Username          string          `gorm:"type:varchar(255);not null;unique"`
-	Bans              []Ban           `gorm:"foreignKey:UserID"`
-	Balances          []Balance       `gorm:"foreignKey:UserID"`
-	Bonuses           []Bonus         `gorm:"foreignKey:UserID"`
-	Businesses        []Business      `gorm:"foreignKey:UserID"`
-	BusinessStaff     []BusinessStaff `gorm:"foreignKey:WorkerID"`
-	ReferralsSent     []Referral      `gorm:"foreignKey:ReferrerID"`
-	ReferralsReceived []Referral      `gorm:"foreignKey:ReferralID"`
-	Transactions      []Transaction   `gorm:"foreignKey:UserID"`
+	VkId              int           `gorm:"not null"`
+	Username          string        `gorm:"type:varchar(255);not null;unique"`
+	Bans              []Ban         `gorm:"foreignKey:UserID"`
+	Balances          []Balance     `gorm:"foreignKey:UserID"`
+	Bonuses           []Bonus       `gorm:"foreignKey:UserID"`
+	Businesses        []Business    `gorm:"foreignKey:UserID"`
+	ReferralsSent     []Referral    `gorm:"foreignKey:ReferrerID"`
+	ReferralsReceived []Referral    `gorm:"foreignKey:ReferralID"`
+	Transactions      []Transaction `gorm:"foreignKey:UserID"`
 }
 
 func (u *User) AfterCreate(tx *gorm.DB) (err error) {
