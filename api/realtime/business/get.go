@@ -39,7 +39,16 @@ func Get(req *entities.Request) {
 		bu = b
 	}
 
+	user, personalUserInfo, err := models.GetUserById(db, bu.UserID)
+	if err != nil {
+		req.SendError(types.ErrorCodeInternalServerError)
+		return
+	}
+
 	req.SendMessage(req.Event, dto.ResponseBusinessGet{
-		Business: dto.BusinessWrap(bu),
+		BusinessID:    bu.ID,
+		Business:      dto.BusinessWrap(bu),
+		BusinessRoles: dto.BusinessRolesWrap(bu.Roles),
+		User:          dto.UserWrap(user, personalUserInfo),
 	})
 }

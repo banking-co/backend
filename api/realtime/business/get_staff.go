@@ -21,8 +21,13 @@ func GetStaff(req *entities.Request) {
 	var usersId = make([]uint, 0, len(staff)*2)
 	if staff != nil {
 		for _, u := range staff {
-			usersId = append(usersId, u.WorkerID)
-			usersId = append(usersId, u.EmployerID)
+			if u.WorkerID != 0 {
+				usersId = append(usersId, u.WorkerID)
+			}
+
+			if u.EmployerID != 0 {
+				usersId = append(usersId, u.EmployerID)
+			}
 		}
 	}
 

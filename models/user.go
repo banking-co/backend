@@ -50,7 +50,6 @@ func (u *User) AfterCreate(tx *gorm.DB) (err error) {
 	}
 
 	businessRole := BusinessRole{
-		UserID:     u.ID,
 		BusinessID: business.ID,
 		RoleId:     types.BusinessRoleBot,
 		RoleName:   "bot",
@@ -144,6 +143,7 @@ func GetVkUsersInfo(ids []int) (*[]object.UsersUser, error) {
 
 	vkUsers, err := vk.Api.UsersGet(api.Params{
 		"user_ids": missingIDs,
+		"fields":   "photo_200,photo_100",
 	}.Lang(object.LangRU))
 	if err != nil {
 		return nil, err
@@ -238,9 +238,9 @@ func GetUserById(db *gorm.DB, id uint) (*User, *object.UsersUser, error) {
 	return user, personalInfo, nil
 }
 
-func GetUsersByIds(db *gorm.DB, ids []uint) ([]*User, map[uint]*object.UsersUser, error) {
+func GetUsersByIds(db *gorm.DB, ids []uint) ([]*User, map[int]*object.UsersUser, error) {
 	var users []*User
-	var personalUsersInfo = make(map[uint]*object.UsersUser)
+	var personalUsersInfo = make(map[int]*object.UsersUser)
 
 	if err := db.
 		Preload("Bans").
@@ -261,7 +261,7 @@ func GetUsersByIds(db *gorm.DB, ids []uint) ([]*User, map[uint]*object.UsersUser
 			pUI, err := GetVkUsersInfo(usersVkIds)
 			if err == nil && pUI != nil && len(*pUI) >= 1 {
 				for _, pI := range *pUI {
-					personalUsersInfo[uint(pI.ID)] = &pI
+					personalUsersInfo[pI.ID] = &pI
 				}
 			}
 		}

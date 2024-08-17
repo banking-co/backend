@@ -11,8 +11,8 @@ type VkUserInfo struct {
 	Id        int    `json:"id,omitempty"`
 	FirstName string `json:"firstName,omitempty"`
 	LastName  string `json:"lastName,omitempty"`
-	Photo200  string `json:"photo_200"`
-	Photo100  string `json:"photo_100"`
+	Photo200  string `json:"photo200"`
+	Photo100  string `json:"photo100"`
 }
 
 type User struct {
@@ -53,11 +53,11 @@ func UserWrap(u *models.User, p *object.UsersUser) *User {
 	}
 }
 
-func UsersWrap(us []*models.User, pIs map[uint]*object.UsersUser) []*User {
+func UsersWrap(us []*models.User, pIs map[int]*object.UsersUser) []*User {
 	var users = make([]*User, 0, len(us))
 	for _, u := range us {
 		if u != nil {
-			personalInfo := pIs[u.ID]
+			personalInfo := pIs[u.VkId]
 			users = append(users, UserWrap(u, personalInfo))
 		}
 	}

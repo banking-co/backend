@@ -8,7 +8,7 @@ import (
 
 type BusinessStaff struct {
 	ID         uint `json:"id"`
-	BusinessID uint `json:"businessId"`
+	BusinessID uint `json:"bankId"`
 
 	UserType uint8 `json:"userType"`
 	RoleID   uint8 `json:"roleId"`

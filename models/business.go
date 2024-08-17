@@ -11,6 +11,7 @@ type Business struct {
 	User     User              `gorm:"foreignKey:UserID"`
 	Upgrades []BusinessUpgrade `gorm:"foreignKey:BusinessID"`
 	Staff    []BusinessStaff   `gorm:"foreignKey:BusinessID"`
+	Roles    []BusinessRole    `gorm:"foreignKey:BusinessID"`
 	Profits  []BusinessProfit  `gorm:"foreignKey:BusinessID"`
 }
 
@@ -38,6 +39,7 @@ func GetBusinessByUserId(db *gorm.DB, uid int) (*Business, error) {
 		Preload("Upgrades").
 		Preload("Staff").
 		Preload("Profits").
+		Preload("Roles").
 		Where(`user_id = ?`, uid).
 		First(&business).Error; err != nil {
 		return nil, err

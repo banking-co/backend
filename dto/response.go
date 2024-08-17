@@ -1,9 +1,15 @@
 package dto
 
-import "rabotyaga-go-backend/models"
+import (
+	"time"
+)
 
 type ResponseError struct {
 	Code string `json:"code,omitempty"`
+}
+
+type ResponsePingGet struct {
+	Time time.Time `json:"time"`
 }
 
 type ResponseStartApp struct {
@@ -17,11 +23,10 @@ type ResponseUserGet struct {
 }
 
 type ResponseBusinessGet struct {
-	Business        *Business               `json:"bank,omitempty"`
-	BusinessStaff   *models.BusinessStaff   `json:"bankStaff,omitempty"`
-	BusinessRole    *models.BusinessRole    `json:"bankRoles,omitempty"`
-	BusinessUpgrade *models.BusinessUpgrade `json:"bankUpgrades,omitempty"`
-	BusinessProfits *models.BusinessProfit  `json:"bankProfits,omitempty"`
+	BusinessID    uint            `json:"bankId,omitempty"`
+	Business      *Business       `json:"bank,omitempty"`
+	BusinessRoles []*BusinessRole `json:"bankRoles,omitempty"`
+	User          *User           `json:"user,omitempty"`
 }
 
 type ResponseBusinessStaffGet struct {
