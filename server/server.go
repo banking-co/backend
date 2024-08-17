@@ -95,6 +95,11 @@ func (s *Server) Listen() {
 					break
 				}
 
+				err = conn.SetDeadline(time.Now().Add(15 * time.Second))
+				if err != nil {
+					break
+				}
+
 				message, err := utils.UnmarshalData[types.EventParams](msg)
 				if err != nil {
 					break
