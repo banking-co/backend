@@ -62,7 +62,7 @@ func (u *User) AfterCreate(tx *gorm.DB) (err error) {
 		BusinessID: business.ID,
 		EmployerID: 0,
 		UserType:   0,
-		WorkerID:   u.ID,
+		WorkerID:   0,
 		RoleID:     types.BusinessRoleBot,
 		Salary:     0,
 	}
