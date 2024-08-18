@@ -13,38 +13,26 @@ const (
 )
 
 const (
-	EventPing               EventType = "ping"
-	EventPong               EventType = "pong"
-	EventStartApp           EventType = "start_app"
-	EventGetBusiness        EventType = "get_business"
-	EventGetPrimaryBusiness EventType = "get_pr_business"
-	EventGetBusinessStaff   EventType = "get_st_business"
-	EventBalanceGet         EventType = "balance_get"
-	EventBonusGet           EventType = "bonus_get"
-	EventBonusReceive       EventType = "bonus_receive"
-	EventUserGet            EventType = "user_get"
-	EventError              EventType = "error"
-)
+	EventPing     EventType = "ping"
+	EventPong     EventType = "pong"
+	EventStartApp EventType = "start_app"
+	EventError    EventType = "error"
 
-var Events = []EventType{
-	EventPing,
-	EventPong,
-	EventStartApp,
-	EventGetPrimaryBusiness,
-	EventGetBusinessStaff,
-	EventGetBusiness,
-	EventBalanceGet,
-	EventBonusGet,
-	EventBonusReceive,
-	EventUserGet,
-	EventError,
-}
+	EventUserGet EventType = "user_get"
+
+	EventGetBusiness             EventType = "get_bus"
+	EventGetPrimaryBusiness      EventType = "get_pr_bus"
+	EventGetBusinessStaff        EventType = "get_st_bus"
+	EventGetBusinessStaffRecruit EventType = "get_st_r_bus"
+	EventBuyBusinessStaffRecruit EventType = "buy_st_r_bus"
+
+	EventBalanceGet EventType = "bal_get"
+
+	EventBonusGet     EventType = "bon_get"
+	EventBonusReceive EventType = "bon_receive"
+)
 
 type EventParams struct {
 	Event EventType       `json:"event"`
 	Data  json.RawMessage `json:"data,omitempty"`
-}
-
-type Error struct {
-	Msg string `json:"msg"`
 }

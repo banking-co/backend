@@ -34,3 +34,7 @@ type ResponseBusinessStaffGet struct {
 	BusinessStaff []*BusinessStaff `json:"bankStaff,omitempty"`
 	Users         []*User          `json:"users,omitempty"`
 }
+
+type ResponseBusinessStaffRecruitGet struct {
+	Items []*Item `json:"items,omitempty"`
+}

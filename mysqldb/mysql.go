@@ -1,11 +1,13 @@
 package mysqldb
 
 import (
+	"errors"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
 	"os"
 	"rabotyaga-go-backend/models"
+	"rabotyaga-go-backend/types"
 )
 
 type Options struct {
@@ -48,5 +50,35 @@ func Init() {
 func Migrate() {
 	if err := models.RegisterModels(DB); err != nil {
 		log.Fatal("Failed to migrate database:", err)
+	}
+
+	seedItems()
+}
+
+func seedItems() {
+	items := []models.Item{
+		{
+			Name:       "bot",
+			Type:       types.ItemTypeBusinessStaff,
+			Rarity:     types.ItemRarityDefault,
+			Cost:       1000 * 100,
+			IsBuyable:  true,
+			IsSellable: true,
+		},
+	}
+
+	for _, item := range items {
+		var existingItem models.Item
+		result := DB.Where("type = ? AND name = ? AND rarity = ? AND cost = ?", item.Type, item.Name, item.Rarity, item.Cost).First(&existingItem)
+
+		if result.Error != nil {
+			if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+				DB.Create(&item)
+			} else {
+				log.Fatalf("failed to query item: %v", result.Error)
+			}
+		} else {
+			DB.Model(&existingItem).Updates(item)
+		}
 	}
 }

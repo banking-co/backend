@@ -20,7 +20,8 @@ import (
 type OnCallbackFunc = func(req *entities.Request)
 
 type Server struct {
-	events map[types.EventType][]OnCallbackFunc
+	events           map[types.EventType][]OnCallbackFunc
+	biggestEventSize uint8
 }
 
 func Init() *Server {
@@ -34,6 +35,14 @@ func Init() *Server {
 
 func (s *Server) Listen() {
 	mode, modeExist := os.LookupEnv("APP_ENV")
+
+	for e, _ := range s.events {
+		eventLength := uint8(len(e))
+
+		if s.biggestEventSize < eventLength {
+			s.biggestEventSize = eventLength
+		}
+	}
 
 	err := http.ListenAndServe(":3001", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		validate, err := vkapps.ParamsVerify(r.URL.String(), "8PogTmDn5uru9WPdXuup")
@@ -85,6 +94,10 @@ func (s *Server) Listen() {
 
 			user, _, err := models.GetUserByUsername(mysqldb.DB, vkParams.VkUserID)
 			if err != nil {
+				utils.SendError(w, "GetUser executed with an error", http.StatusUnauthorized)
+				return
+			}
+			if user == nil {
 				utils.SendError(w, "User is nil", http.StatusUnauthorized)
 				return
 			}
@@ -92,20 +105,27 @@ func (s *Server) Listen() {
 			for {
 				msg, op, err := wsutil.ReadClientData(conn)
 				if err != nil {
+					utils.SendError(w, "Message is nil", http.StatusBadRequest)
+					break
+				}
+				if len(msg) >= 100 {
+					utils.SendError(w, "Message is very big", http.StatusBadRequest)
 					break
 				}
 
 				err = conn.SetDeadline(time.Now().Add(15 * time.Second))
 				if err != nil {
+					utils.SendError(w, "Connection SetDeadline executed with an error", http.StatusBadRequest)
 					break
 				}
 
 				message, err := utils.UnmarshalData[types.EventParams](msg)
 				if err != nil {
+					utils.SendError(w, "Data is falsified", http.StatusBadRequest)
 					break
 				}
 
-				if uint8(len(message.Event)) > utils.GetBigLenEvent() {
+				if uint8(len(message.Event)) > s.biggestEventSize {
 					utils.SendError(w, "Event is very big", http.StatusBadRequest)
 					break
 				}
