@@ -11,8 +11,10 @@ type VkUserInfo struct {
 	Id        int    `json:"id,omitempty"`
 	FirstName string `json:"firstName,omitempty"`
 	LastName  string `json:"lastName,omitempty"`
+	PhotoMax  string `json:"photoMax"`
 	Photo200  string `json:"photo200"`
 	Photo100  string `json:"photo100"`
+	Photo50   string `json:"photo50"`
 }
 
 type User struct {
@@ -33,8 +35,10 @@ func VkUserInfoWrap(u *object.UsersUser) *VkUserInfo {
 		Id:        u.ID,
 		FirstName: u.FirstName,
 		LastName:  u.LastName,
+		Photo50:   u.Photo50,
 		Photo100:  u.Photo100,
 		Photo200:  u.Photo200,
+		PhotoMax:  u.PhotoMax,
 	}
 }
 

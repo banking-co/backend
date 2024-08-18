@@ -142,7 +142,7 @@ func GetVkUsersInfo(ids []int) (*[]object.UsersUser, error) {
 
 	vkUsers, err := vk.Api.UsersGet(api.Params{
 		"user_ids": missingIDs,
-		"fields":   "photo_200,photo_100",
+		"fields":   "photo_max,photo_200,photo_100,photo_50",
 	}.Lang(object.LangRU))
 	if err != nil {
 		return nil, err
