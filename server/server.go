@@ -36,7 +36,7 @@ func Init() *Server {
 func (s *Server) Listen() {
 	mode, modeExist := os.LookupEnv("APP_ENV")
 
-	for e, _ := range s.events {
+	for e := range s.events {
 		eventLength := uint8(len(e))
 
 		if s.biggestEventSize < eventLength {
@@ -45,6 +45,13 @@ func (s *Server) Listen() {
 	}
 
 	err := http.ListenAndServe(":3001", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		// routing
+
+		//if rest
+		// TODO: add payment routing
+
+		// if ws
 		validate, err := vkapps.ParamsVerify(r.URL.String(), "8PogTmDn5uru9WPdXuup")
 		if !validate {
 			utils.SendError(w, "Signature verification error", http.StatusForbidden)
@@ -105,7 +112,7 @@ func (s *Server) Listen() {
 			for {
 				msg, op, err := wsutil.ReadClientData(conn)
 				if err != nil {
-					utils.SendError(w, "Message is nil", http.StatusBadRequest)
+					utils.SendError(w, err.Error(), http.StatusBadRequest)
 					break
 				}
 				if len(msg) >= 100 {
@@ -161,6 +168,7 @@ func (s *Server) Listen() {
 func (s *Server) OnSocket(e types.EventType, cb OnCallbackFunc) {
 	if _, ok := s.events[e]; !ok {
 		s.events[e] = []OnCallbackFunc{}
+		fmt.Printf("[%v]: launched \r\n", e)
 	}
 
 	s.events[e] = append(s.events[e], cb)
