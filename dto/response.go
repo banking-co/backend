@@ -19,10 +19,14 @@ type ResponseStartApp struct {
 }
 
 type ResponseUserGet struct {
-	User User `json:"user"`
+	User          *User           `json:"user,omitempty"`
+	Work          any             `json:"work,omitempty"`
+	Business      *Business       `json:"bank,omitempty"`
+	BusinessRoles []*BusinessRole `json:"bankRoles,omitempty"`
 }
 
 type ResponseBusinessGet struct {
+	Type          string          `json:"type"`
 	BusinessID    uint            `json:"bankId,omitempty"`
 	Business      *Business       `json:"bank,omitempty"`
 	BusinessRoles []*BusinessRole `json:"bankRoles,omitempty"`

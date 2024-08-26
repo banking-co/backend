@@ -64,3 +64,40 @@ func (r *Request) PickInt(k string) *int {
 
 	return nil
 }
+
+func (r *Request) PickUint(k string) *uint {
+	var data map[string]interface{}
+
+	err := json.Unmarshal(r.Data, &data)
+	if err != nil {
+		fmt.Println("[Error] Failed to unmarshal JSON:", err)
+		return nil
+	}
+
+	if val, ok := data[k]; ok {
+		if floatVal, ok := val.(float64); ok {
+			intVal := uint(floatVal)
+			return &intVal
+		}
+	}
+
+	return nil
+}
+
+func (r *Request) PickString(k string) *string {
+	var data map[string]interface{}
+
+	err := json.Unmarshal(r.Data, &data)
+	if err != nil {
+		fmt.Println("[Error] Failed to unmarshal JSON:", err)
+		return nil
+	}
+
+	if val, ok := data[k]; ok {
+		if str, ok := val.(string); ok {
+			return &str
+		}
+	}
+
+	return nil
+}

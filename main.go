@@ -46,7 +46,6 @@ func main() {
 
 	// business
 	s.OnSocket(types.EventGetBusiness, business.Get)
-	s.OnSocket(types.EventGetPrimaryBusiness, business.Get)
 	s.OnSocket(types.EventGetBusinessStaff, business.GetStaff)
 	s.OnSocket(types.EventGetBusinessStaffRecruit, business.RecruitGetStaff)
 	s.OnSocket(types.EventBuyBusinessStaffRecruit, business.RecruitBuyStaff)

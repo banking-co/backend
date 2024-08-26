@@ -80,7 +80,7 @@ func (s *Server) Listen() {
 		}
 
 		if !modeExist || mode != "development" {
-			if time.Now().Sub(time.Unix(vkTs, 0)) >= 10*time.Minute {
+			if time.Now().Sub(time.Unix(vkTs, 0)) >= 60*time.Minute {
 				utils.SendError(w, "The authorization period has expired", http.StatusForbidden)
 				return
 			}
@@ -120,7 +120,7 @@ func (s *Server) Listen() {
 					break
 				}
 
-				err = conn.SetDeadline(time.Now().Add(15 * time.Second))
+				err = conn.SetDeadline(time.Now().Add(20 * time.Second))
 				if err != nil {
 					utils.SendError(w, "Connection SetDeadline executed with an error", http.StatusBadRequest)
 					break

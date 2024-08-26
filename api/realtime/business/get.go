@@ -11,8 +11,14 @@ import (
 func Get(req *entities.Request) {
 	var db = mysqldb.DB
 	var bu *models.Business
-	var uID = req.PickInt("userId")
-	var bID = req.PickInt("businessId")
+	var uID = req.PickUint("userId")
+	var bID = req.PickUint("businessId")
+	var bType = req.PickString("type")
+
+	if bType == nil {
+		newBusinessType := "default"
+		bType = &newBusinessType
+	}
 
 	if uID == nil && bID == nil {
 		req.SendError(types.ErrorCodeBadRequest)
@@ -46,6 +52,7 @@ func Get(req *entities.Request) {
 	}
 
 	req.SendMessage(req.Event, dto.ResponseBusinessGet{
+		Type:          *bType,
 		BusinessID:    bu.ID,
 		Business:      dto.BusinessWrap(bu),
 		BusinessRoles: dto.BusinessRolesWrap(bu.Roles),

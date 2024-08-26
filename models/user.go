@@ -221,6 +221,7 @@ func GetUserById(db *gorm.DB, id uint) (*User, *object.UsersUser, error) {
 	if err := db.
 		Preload("Bans").
 		Preload("Balances").
+		Preload("Businesses").
 		Where("id = ?", id).
 		First(&user).Error; err != nil {
 		return nil, nil, errors.New("users is nil")

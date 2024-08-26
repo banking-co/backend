@@ -15,7 +15,7 @@ type Business struct {
 	Profits  []BusinessProfit  `gorm:"foreignKey:BusinessID"`
 }
 
-func GetBusinessById(db *gorm.DB, bid int) (*Business, error) {
+func GetBusinessById(db *gorm.DB, bid uint) (*Business, error) {
 	var business Business
 
 	if err := db.
@@ -31,7 +31,7 @@ func GetBusinessById(db *gorm.DB, bid int) (*Business, error) {
 	return &business, nil
 }
 
-func GetBusinessByUserId(db *gorm.DB, uid int) (*Business, error) {
+func GetBusinessByUserId(db *gorm.DB, uid uint) (*Business, error) {
 	var business Business
 
 	if err := db.

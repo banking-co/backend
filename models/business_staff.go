@@ -31,3 +31,19 @@ func GetBusinessStaffByBusinessId(db *gorm.DB, bid *int) ([]*BusinessStaff, erro
 
 	return businessStaff, nil
 }
+
+func GetUserWork(db *gorm.DB, uid uint) (*BusinessStaff, error) {
+	var businessStaff *BusinessStaff
+
+	if uid < 1 {
+		return nil, errors.New("business id is nil")
+	}
+
+	if err := db.
+		Where(`worker_id = ?`, uid).
+		First(&businessStaff).Error; err != nil {
+		return nil, err
+	}
+
+	return businessStaff, nil
+}

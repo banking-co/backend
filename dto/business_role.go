@@ -36,10 +36,10 @@ func BusinessRoleWrap(b *models.BusinessRole) *BusinessRole {
 	}
 }
 
-func BusinessRolesWrap(bans []models.BusinessRole) []*BusinessRole {
-	var bA = make([]*BusinessRole, 0, len(bans))
+func BusinessRolesWrap(bR []models.BusinessRole) []*BusinessRole {
+	var bA = make([]*BusinessRole, 0, len(bR))
 
-	for _, b := range bans {
+	for _, b := range bR {
 		bCopy := b
 		bA = append(bA, BusinessRoleWrap(&bCopy))
 	}

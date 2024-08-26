@@ -18,10 +18,9 @@ const (
 	EventStartApp EventType = "start_app"
 	EventError    EventType = "error"
 
-	EventUserGet EventType = "user_get"
+	EventUserGet EventType = "get_usr"
 
 	EventGetBusiness             EventType = "get_bus"
-	EventGetPrimaryBusiness      EventType = "get_pr_bus"
 	EventGetBusinessStaff        EventType = "get_st_bus"
 	EventGetBusinessStaffRecruit EventType = "get_st_r_bus"
 	EventBuyBusinessStaffRecruit EventType = "buy_st_r_bus"
