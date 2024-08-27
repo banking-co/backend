@@ -88,7 +88,7 @@ func (s *Server) Listen() {
 
 		conn, _, _, err := ws.UpgradeHTTP(r, w)
 		if err != nil {
-			log.Panicln("Upgrade HTTP error")
+			log.Panicln("Upgrade HTTP error: ", err)
 		}
 
 		go func() {

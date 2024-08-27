@@ -1,5 +1,4 @@
-version: '3.8'
-name: "banking-app"
+name: "banking_app"
 
 services:
   redis:
