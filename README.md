@@ -8,3 +8,6 @@
 1. Set ```.env```
 2. Run ```docker-compose up -d```
 3. Run ```go run main.go```
+
+### CI/CD
+It is currently not working to save costs. In production, CI/CD will be built using Docker in a new way
